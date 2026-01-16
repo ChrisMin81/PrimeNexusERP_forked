@@ -386,6 +386,12 @@ export class AppConfigurator {
                                     hoverColor: '{primary.600}',
                                     activeColor: '{primary.700}'
                                 },
+                                secondary: {
+                                    color: '{secondary.500}',
+                                    contrastColor: '#ffffff',
+                                    hoverColor: '{secondary.600}',
+                                    activeColor: '{secondary.700}'
+                                },
                                 highlight: {
                                     background: '{primary.50}',
                                     focusBackground: '{primary.100}',

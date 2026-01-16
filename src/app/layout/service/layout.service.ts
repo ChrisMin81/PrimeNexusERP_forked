@@ -2,7 +2,7 @@ import { Injectable, effect, signal, computed } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface layoutConfig {
-    preset?: string;
+    preset?: 'Aura'|'Nora'|'Lara';
     primary?: string;
     surface?: string | undefined | null;
     darkTheme?: boolean;
@@ -27,8 +27,8 @@ interface MenuChangeEvent {
 })
 export class LayoutService {
     _config: layoutConfig = {
-        preset: 'Aura',
-        primary: 'emerald',
+        preset: 'Lara',
+        primary: 'blue',
         surface: null,
         darkTheme: false,
         menuMode: 'static'
