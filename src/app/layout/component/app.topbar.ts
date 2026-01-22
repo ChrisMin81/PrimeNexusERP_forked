@@ -72,7 +72,7 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
+                    <button type="button" class="layout-topbar-action" routerLink="/auth/login">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
                     </button>

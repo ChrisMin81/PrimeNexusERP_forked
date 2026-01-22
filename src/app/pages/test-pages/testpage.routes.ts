@@ -1,8 +1,9 @@
 import { Routes } from '@angular/router';
-import { Empty } from './empty/empty';
+import { Empty } from '@/pages/empty/empty';
+import { TestPage } from '@/pages/test-pages/test-page';
 
 export default [
     { path: 'empty', component: Empty },
-    { path: 'test', loadChildren: () => import('@/pages/test-pages/testpage.routes') },
+    { path: 'test', component: TestPage },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

@@ -23,24 +23,43 @@ export class AppMenu {
             {
                 label: 'Home',
                 items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
-            },{
+            },
+            {
                 label: 'Pages',
                 icon: 'pi pi-fw pi-briefcase',
                 routerLink: ['/pages'],
                 items: [
                     {
-                        label: 'Auth',
-                        icon: 'pi pi-fw pi-user',
+                        label: 'Test',
+                        icon: 'pi pi-fw pi-briefcase',
+                        routerLink: ['/test'],
                         items: [
                             {
-                                label: 'Login',
+                                label: 'test',
                                 icon: 'pi pi-fw pi-sign-in',
-                                routerLink: ['/auth/login']
+                                routerLink: ['pages/test/test']
                             }
-                        ]
+                        ],
+                        expanded: true
                     }
                 ],
-                expanded: true,
+                expanded: true
+            },
+            {
+                label: 'Auth',
+                icon: 'pi pi-fw pi-user',
+                items: [
+                    {
+                        label: 'Login',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/auth/login']
+                    },
+                    {
+                        label: 'Logout',
+                        icon: 'pi pi-fw pi-sign-in',
+                        routerLink: ['/auth/logout']
+                    }
+                ]
             }
         ];
     }
