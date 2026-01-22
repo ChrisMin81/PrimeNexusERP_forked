@@ -36,22 +36,11 @@ export class AppMenu {
                                 label: 'Login',
                                 icon: 'pi pi-fw pi-sign-in',
                                 routerLink: ['/auth/login']
-                            },
-                            {
-                                label: 'Error',
-                                icon: 'pi pi-fw pi-times-circle',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Access Denied',
-                                icon: 'pi pi-fw pi-lock',
-                                routerLink: ['/auth/access']
                             }
                         ]
                     }
                 ],
                 expanded: true,
-                visible: isDevMode() // 'Visible in Dev Mode'
             }
         ];
     }
