@@ -4,7 +4,6 @@ import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-search-input',
-    standalone: true,
     imports: [CommonModule, InputTextModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './search-input.html',

@@ -15,12 +15,15 @@ import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolb
 import { Router } from '@angular/router';
 import { Attachment } from '@/pages/messages/models/attachment';
 import { DialogModule } from 'primeng/dialog';
-import { FileDownloadsOverlay } from '@/pages/common/components/attachments-overlay/file-downloads-overlay.component';
+import {
+    FileDownloadsOverlay
+} from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
+
 
 @Component({
     selector: 'app-drafts',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay],
+    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay, FileDownloadsOverlay],
     templateUrl: './drafts.html',
     styleUrl: './drafts.scss'
 })

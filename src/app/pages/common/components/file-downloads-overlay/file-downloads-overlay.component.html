@@ -1,0 +1,12 @@
+<p-dialog
+    [visible]="visible()"
+    (onHide)="close.emit()"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="header()"
+    class="w-full md:w-6/12"
+>
+    <app-file-list [header]="header()"></app-file-list>
+</p-dialog>

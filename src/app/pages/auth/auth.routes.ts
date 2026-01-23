@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { UnauthorizedAccess } from './unauthorized-access';
-import { Login } from './login';
-import { Error } from './error';
-import { Logout } from './logout';
+import { UnauthorizedAccess } from './unauthorized-access/unauthorized-access';
+import { Login } from './login/login';
+import { Error } from './error/error';
+import { Logout } from './logout/logout';
 
 export default [
     { path: 'unauthorized-access', component: UnauthorizedAccess },

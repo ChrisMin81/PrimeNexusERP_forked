@@ -12,9 +12,6 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <a pButton label="Back" severity="secondary" [outlined]="true" [routerLink]="backLink()"></a>
-                    @if (message() && message()!.attachments.length) {
-                        <p-tag value="Attachments" icon="pi pi-paperclip" severity="info"></p-tag>
-                    }
                 </div>
             </div>
 
@@ -23,11 +20,8 @@
             </div>
 
             @if (message() && message()!.attachments.length) {
-                <div class="flex flex-wrap gap-2 items-center">
-                    <strong class="text-sm text-muted-color">Attachments:</strong>
-                    @for (attachment of message()!.attachments; track attachment.id) {
-                        <p-tag [value]="attachment.name" icon="pi pi-paperclip" severity="info"></p-tag>
-                    }
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                   <app-file-list class="col-start-3" [header]="'Attachments'" [files]="message()!.attachments"></app-file-list>
                 </div>
             }
 

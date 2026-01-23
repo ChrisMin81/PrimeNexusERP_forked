@@ -1,0 +1,18 @@
+<div
+    class="layout-wrapper"
+    [class.layout-overlay]="layoutService.isOverlay()"
+    [class.layout-static]="layoutService.layoutConfig().menuMode === 'static'"
+    [class.layout-static-inactive]="layoutService.layoutState().staticMenuDesktopInactive && layoutService.layoutConfig().menuMode === 'static'"
+    [class.layout-overlay-active]="layoutService.layoutState().overlayMenuActive"
+    [class.layout-mobile-active]="layoutService.layoutState().staticMenuMobileActive"
+>
+    <app-topbar></app-topbar>
+    <app-sidebar></app-sidebar>
+    <div class="layout-main-container">
+        <div class="layout-main">
+            <router-outlet></router-outlet>
+        </div>
+        <app-footer></app-footer>
+    </div>
+    <div class="layout-mask animate-fadein"></div>
+</div>

@@ -1,0 +1,33 @@
+ul {
+    overflow: hidden;
+}
+
+.enter-animation {
+    animation: enter-animation 200ms ease-out forwards;
+}
+
+.leaving {
+    animation: leaving 150ms ease-in forwards;
+}
+
+@keyframes enter-animation {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 800px;
+    }
+}
+
+@keyframes leaving {
+    from {
+        opacity: 1;
+        max-height: 800px;
+    }
+    to {
+        opacity: 0;
+        max-height: 0;
+    }
+}
