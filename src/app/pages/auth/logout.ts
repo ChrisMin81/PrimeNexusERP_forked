@@ -37,14 +37,7 @@ import { AuthService } from '@/pages/auth/auth-service';
 })
 export class Logout implements OnInit {
     private authService: AuthService = inject(AuthService);
-    private router: Router = inject(Router);
-    private destroyRef = inject(DestroyRef);
     ngOnInit(): void {
-        let subscription = this.authService.logout().subscribe(() => {
-            console.log('User is logged in');
-            this.router.navigateByUrl('/auth/login');
-        });
-        this.destroyRef.onDestroy(() => subscription.unsubscribe());
-        console.log('Logout component initialized');
+        this.authService.logout();
     }
 }

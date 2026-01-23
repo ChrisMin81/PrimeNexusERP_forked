@@ -2,11 +2,11 @@ import { Injectable, effect, signal, computed } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export interface layoutConfig {
-    preset?: 'Aura'|'Nora'|'Lara';
+    preset?: 'Aura' | 'Nora' | 'Lara';
     primary?: string;
     surface?: string | undefined | null;
     darkTheme?: boolean;
-    menuMode?: string;
+    menuMode?: 'static' | 'overlay' | undefined;
 }
 
 interface LayoutState {
@@ -31,7 +31,7 @@ export class LayoutService {
         primary: 'blue',
         surface: null,
         darkTheme: false,
-        menuMode: 'static'
+        menuMode: 'overlay'
     };
 
     _state: LayoutState = {

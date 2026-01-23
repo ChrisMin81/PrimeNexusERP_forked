@@ -1,0 +1,37 @@
+<div class="flex flex-col gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 m-0">{{ title() }}</h2>
+            <p-badge [value]="count().toString()" severity="info"></p-badge>
+        </div>
+        <div class="flex items-center gap-2">
+            @if (showCompose()) {
+            <button pButton type="button" severity="primary" (click)="compose.emit()">
+                <span pButtonIcon class="pi pi-pencil"></span>
+                <span pButtonLabel>Compose</span>
+            </button>
+        }
+        <button pButton type="button" severity="secondary" [outlined]="true" aria-label="Refresh" (click)="refresh.emit()">
+            <span pButtonIcon class="pi pi-refresh"></span>
+        </button>
+        @if (loading()) {
+            <p-progressSpinner strokeWidth="4" class="w-2rem h-2rem" aria-label="Loading"></p-progressSpinner>
+        }
+        </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+        <app-search-input
+            class="w-full md:w-25rem"
+            [value]="''"
+            [placeholder]="searchPlaceholder()"
+            [ariaLabel]="searchLabel()"
+            (valueChange)="searchChange.emit($event)"
+        />
+        @if (subtitle()) {
+            <div class="flex items-center gap-2 text-sm text-muted-color">
+                <i class="pi pi-info-circle"></i>
+                <span>{{ subtitle() }}</span>
+            </div>
+        }
+    </div>
+</div>

@@ -1,8 +1,9 @@
-import { Component, isDevMode } from '@angular/core';
+import { Component, inject, isDevMode } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem, MenuItemCommandEvent } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '@/pages/auth/auth-service';
 
 @Component({
     selector: 'app-menu',
@@ -17,30 +18,38 @@ import { AppMenuitem } from './app.menuitem';
 })
 export class AppMenu {
     model: MenuItem[] = [];
+    private authService = inject(AuthService);
 
     ngOnInit() {
         this.model = [
             {
                 label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
+                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] }]
             },
             {
-                label: 'Pages',
+                label: 'Messages',
                 icon: 'pi pi-fw pi-briefcase',
-                routerLink: ['/pages'],
+                routerLink: ['messages'],
                 items: [
                     {
-                        label: 'Test',
-                        icon: 'pi pi-fw pi-briefcase',
-                        routerLink: ['/test'],
-                        items: [
-                            {
-                                label: 'test',
-                                icon: 'pi pi-fw pi-sign-in',
-                                routerLink: ['pages/test/test']
-                            }
-                        ],
-                        expanded: true
+                        label: 'Compose',
+                        icon: 'pi pi-fw pi-inbox',
+                        routerLink: ['pages', 'messages', 'compose']
+                    },
+                    {
+                        label: 'Inbox',
+                        icon: 'pi pi-fw pi-inbox',
+                        routerLink: ['pages', 'messages', 'inbox']
+                    },
+                    {
+                        label: 'Drafts',
+                        icon: 'pi pi-fw pi-file',
+                        routerLink: ['pages', 'messages', 'drafts']
+                    },
+                    {
+                        label: 'Sent',
+                        icon: 'pi pi-fw pi-send',
+                        routerLink: ['pages', 'messages', 'sent']
                     }
                 ],
                 expanded: true
@@ -52,12 +61,14 @@ export class AppMenu {
                     {
                         label: 'Login',
                         icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/login']
+                        routerLink: ['/auth/login'],
+                        visible: !this.authService.isAuthenticated()
                     },
                     {
                         label: 'Logout',
                         icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/logout']
+                        routerLink: ['/auth/logout'],
+                        visible: this.authService.isAuthenticated()
                     }
                 ]
             }

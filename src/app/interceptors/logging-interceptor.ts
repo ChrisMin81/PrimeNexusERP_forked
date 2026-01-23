@@ -1,8 +1,10 @@
 import { HttpEventType, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, tap, throwError } from 'rxjs';
-import { isDevMode } from '@angular/core';
+import { inject, isDevMode } from '@angular/core';
+import { LoggerService } from '@/services/logger/logger';
 
 export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
+    const logger = inject(LoggerService);
     const interceptedRequest$ = next(req).pipe(
         catchError((err) => {
             console.error('Error:', err);
@@ -13,10 +15,10 @@ export const loggingInterceptor: HttpInterceptorFn = (req, next) => {
         return interceptedRequest$.pipe(
             tap((event) => {
                 if (event.type === HttpEventType.Response) {
-                    console.log('Response Status:', event.status);
+                    logger.debug('Response Status:', event.status);
                 } else {
                     if (event.type === HttpEventType.Sent) {
-                        console.log('Request Type: ', event.type, req.body);
+                        logger.debug('Request Type: ', event.type, req.body);
                     }
                 }
             })

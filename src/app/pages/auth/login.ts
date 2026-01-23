@@ -47,16 +47,16 @@ import { AuthService } from '@/pages/auth/auth-service';
                             <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" formControlName="email" />
 
                             <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                            <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" styleClass="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                            <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" class="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
-<!--                            <div class="flex items-center justify-between mt-2 mb-8 gap-8">-->
-<!--                                <div class="flex items-center">-->
-<!--                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>-->
-<!--                                    <label for="rememberme1">Remember me</label>-->
-<!--                                </div>-->
-<!--                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>-->
-<!--                            </div>-->
-                            <p-button label="Sign In" styleClass="w-full" (click)="login()"></p-button>
+                            <!--                            <div class="flex items-center justify-between mt-2 mb-8 gap-8">-->
+                            <!--                                <div class="flex items-center">-->
+                            <!--                                    <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="mr-2"></p-checkbox>-->
+                            <!--                                    <label for="rememberme1">Remember me</label>-->
+                            <!--                                </div>-->
+                            <!--                                <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>-->
+                            <!--                            </div>-->
+                            <p-button label="Sign In" class="w-full" (click)="login()"></p-button>
                         </div>
                     </div>
                 </div>
@@ -67,7 +67,6 @@ import { AuthService } from '@/pages/auth/auth-service';
 export class Login {
     private fb: FormBuilder = inject(FormBuilder);
     private authService: AuthService = inject(AuthService);
-    private router: Router = inject(Router);
     form: FormGroup = this.fb.group({
         email: ['', Validators.required],
         password: ['', Validators.required]
@@ -77,10 +76,7 @@ export class Login {
         const val = this.form.value;
 
         if (val.email && val.password) {
-            this.authService.login(val.email, val.password).subscribe(() => {
-                console.log('User is logged in');
-                this.router.navigateByUrl('/');
-            });
+            this.authService.login(val.email, val.password);
         }
     }
 }

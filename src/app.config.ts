@@ -9,11 +9,12 @@ import { authInterceptorFn } from '@/interceptors/auth.interceptor';
 import { authErrorInterceptorFn } from '@/interceptors/auth-error.interceptor';
 import { loggingInterceptor } from '@/interceptors/logging-interceptor';
 import { fakeBackendInterceptor } from '@/fake-backend/fake-backend-interceptor';
+import { LoadingService } from '@/services/loading/loading.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation()),
-        provideHttpClient(withInterceptors([fakeBackendInterceptor,  authInterceptorFn, authErrorInterceptorFn, loggingInterceptor]), withFetch()),
+        provideHttpClient(withInterceptors([fakeBackendInterceptor, authInterceptorFn, authErrorInterceptorFn, loggingInterceptor]), withFetch()),
         provideZonelessChangeDetection(),
         provideAnimationsAsync(),
         providePrimeNG({
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
                     darkModeSelector: '.app-dark'
                 }
             }
-        })
+        }),
+        LoadingService
     ]
 };

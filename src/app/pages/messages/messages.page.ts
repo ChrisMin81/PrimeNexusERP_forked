@@ -15,4 +15,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         </div>
     `
 })
-export class TestPage {}
+export class MessagesPage {}

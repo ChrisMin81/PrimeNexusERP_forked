@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StyleClassModule } from 'primeng/styleclass';
-import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '../service/layout.service';
+import { BadgeModule } from 'primeng/badge';
+import { MailService } from '@/pages/messages/services/mail.service';
+import { AppConfigurator } from '@/layout/component/app.configurator';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
-    imports: [RouterModule, CommonModule, StyleClassModule, AppConfigurator],
+    imports: [RouterModule, CommonModule, StyleClassModule, BadgeModule, AppConfigurator],
     template: ` <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
@@ -38,7 +40,7 @@ import { LayoutService } from '../service/layout.service';
         </div>
 
         <div class="layout-topbar-actions">
-            <div class="layout-config-menu">
+            <div class="layout-config-menu" style="display: none">
                 <button type="button" class="layout-topbar-action" (click)="toggleDarkMode()">
                     <i [ngClass]="{ 'pi ': true, 'pi-moon': layoutService.isDarkTheme(), 'pi-sun': !layoutService.isDarkTheme() }"></i>
                 </button>
@@ -68,11 +70,14 @@ import { LayoutService } from '../service/layout.service';
                         <i class="pi pi-calendar"></i>
                         <span>Calendar</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
+                    <button type="button" class="layout-topbar-action" routerLink="/pages/messages/inbox">
                         <i class="pi pi-inbox"></i>
                         <span>Messages</span>
+                        @if (unreadCount() > 0) {
+                            <p-badge [value]="unreadCount().toString()" severity="danger" class="ml-2"></p-badge>
+                        }
                     </button>
-                    <button type="button" class="layout-topbar-action" routerLink="/auth/login">
+                    <button type="button" class="layout-topbar-action">
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
                     </button>
@@ -83,6 +88,9 @@ import { LayoutService } from '../service/layout.service';
 })
 export class AppTopbar {
     items!: MenuItem[];
+    private mailService = inject(MailService);
+    private inboxMessages = this.mailService.getInbox();
+    unreadCount = computed(() => (this.inboxMessages() ?? []).filter((message) => !message.isRead).length);
 
     constructor(public layoutService: LayoutService) {}
 

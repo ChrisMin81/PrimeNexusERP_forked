@@ -10,9 +10,13 @@ import {CommonModule} from "@angular/common";
     imports: [CommonModule, ButtonModule, StyleClassModule, AppConfigurator],
     template: `
         <div class="flex gap-4 top-8 right-8" [ngClass]="{'fixed':float()}">
-            <p-button type="button" (onClick)="toggleDarkMode()" [rounded]="true" [icon]="isDarkTheme() ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary" />
+            <button pButton type="button" (click)="toggleDarkMode()" [rounded]="true" severity="secondary">
+                <span pButtonIcon [ngClass]="isDarkTheme() ? 'pi pi-moon' : 'pi pi-sun'"></span>
+            </button>
             <div class="relative">
-                <p-button icon="pi pi-palette" pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" type="button" rounded />
+                <button pButton pStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true" type="button" rounded>
+                    <span pButtonIcon class="pi pi-palette"></span>
+                </button>
                 <app-configurator />
             </div>
         </div>

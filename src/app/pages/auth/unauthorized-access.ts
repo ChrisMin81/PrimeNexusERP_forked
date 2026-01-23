@@ -5,7 +5,7 @@ import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
 
 @Component({
-    selector: 'app-access',
+    selector: 'app-unauthorized-access',
     standalone: true,
     imports: [ButtonModule, RouterModule, RippleModule, AppFloatingConfigurator, ButtonModule],
     template: ` <app-floating-configurator />
@@ -18,10 +18,10 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                 <i class="text-orange-500 pi pi-fw pi-lock text-2xl!"></i>
                             </div>
                             <h1 class="text-surface-900 dark:text-surface-0 font-bold text-4xl lg:text-5xl mb-2">Access Denied</h1>
-                            <span class="text-muted-color mb-8">You do not have the necessary permissions. Please contact admins.</span>
+                            <span class="text-muted-color mb-8">You do not have the necessary permissions.</span>
                             <img src="https://primefaces.org/cdn/templates/sakai/auth/asset-access.svg" alt="Access denied" class="mb-8" width="80%" />
                             <div class="col-span-12 mt-8 text-center">
-                                <p-button label="Go to Dashboard" routerLink="/" severity="warn" />
+                                <p-button label="Go to Login" routerLink="/auth/login" severity="warn" />
                             </div>
                         </div>
                     </div>
@@ -29,4 +29,4 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
             </div>
         </div>`
 })
-export class Access {}
+export class UnauthorizedAccess {}
