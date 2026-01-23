@@ -1,4 +1,4 @@
-import { HttpHandler, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { AuthResult } from '@/pages/auth/model/authResult';
 import { AuthRequest } from '@/pages/auth/model/authRequest';

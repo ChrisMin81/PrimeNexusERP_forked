@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, Renderer2, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, Renderer2, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
@@ -29,21 +29,19 @@ export class AppLayout {
         public renderer: Renderer2,
         public router: Router
     ) {
-        this.layoutService.overlayOpen$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => {
-                if (!this.menuOutsideClickListener) {
-                    this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {
-                        if (this.isOutsideClicked(event)) {
-                            this.hideMenu();
-                        }
-                    });
-                }
+        this.layoutService.overlayOpen$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+            if (!this.menuOutsideClickListener) {
+                this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {
+                    if (this.isOutsideClicked(event)) {
+                        this.hideMenu();
+                    }
+                });
+            }
 
-                if (this.layoutService.layoutState().staticMenuMobileActive) {
-                    this.blockBodyScroll();
-                }
-            });
+            if (this.layoutService.layoutState().staticMenuMobileActive) {
+                this.blockBodyScroll();
+            }
+        });
 
         this.router.events
             .pipe(

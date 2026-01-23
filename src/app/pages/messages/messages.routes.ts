@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { Empty } from '@/pages/empty/empty';
 import { MessagesPage } from '@/pages/messages/messages.page';
 import { Inbox } from '@/pages/messages/inbox/inbox';
 import { Sent } from '@/pages/messages/sent/sent';

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
 import { AppConfigurator } from '@/layout/component/app-configurator/app.configurator';
-import { LayoutService, layoutConfig } from '@/layout/service/layout.service';
+import { layoutConfig, LayoutService } from '@/layout/service/layout.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

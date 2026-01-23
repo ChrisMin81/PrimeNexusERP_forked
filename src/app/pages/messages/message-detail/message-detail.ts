@@ -1,19 +1,16 @@
-import { ChangeDetectionStrategy, Component, Signal, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MailService, Mailbox } from '@/pages/messages/services/mail.service';
+import { Mailbox, MailService } from '@/pages/messages/services/mail.service';
 import { Message } from '@/pages/messages/models/message';
 import { FileList } from '@/pages/common/components/file-downloads-overlay/file-list/file-list';
-import {
-    FileDownloadsOverlay
-} from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 
 @Component({
     selector: 'app-message-detail',
-    imports: [CommonModule, RouterModule, ButtonModule, TagModule, FileList, FileDownloadsOverlay],
+    imports: [CommonModule, RouterModule, ButtonModule, TagModule, FileList],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './message-detail.html',
     styleUrl: './message-detail.scss'

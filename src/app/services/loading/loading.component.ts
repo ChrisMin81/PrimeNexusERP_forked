@@ -3,12 +3,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoadingService } from './loading.service';
 
 @Component({
-  selector: 'loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.css'],
-  imports: [ProgressSpinnerModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'loading',
+    templateUrl: './loading.component.html',
+    styleUrls: ['./loading.component.css'],
+    imports: [ProgressSpinnerModule],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingComponent {
-  loadingService = inject(LoadingService);
+    loadingService = inject(LoadingService);
 }

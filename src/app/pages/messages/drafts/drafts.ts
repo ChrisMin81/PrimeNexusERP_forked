@@ -7,18 +7,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
-import { Router } from '@angular/router';
 import { Attachment } from '@/pages/messages/models/attachment';
 import { DialogModule } from 'primeng/dialog';
-import {
-    FileDownloadsOverlay
-} from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
-
+import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 
 @Component({
     selector: 'app-drafts',

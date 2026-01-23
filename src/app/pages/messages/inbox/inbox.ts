@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
@@ -99,9 +99,7 @@ export class Inbox {
         this.deletingId.set(id);
         this.mailService
             .deleteInboxMessage(id)
-            .pipe(
-                finalize(() => this.deletingId.set(null))
-            )
+            .pipe(finalize(() => this.deletingId.set(null)))
             .subscribe({
                 error: (error) => this.logger.trace('Failed to delete inbox message', error)
             });

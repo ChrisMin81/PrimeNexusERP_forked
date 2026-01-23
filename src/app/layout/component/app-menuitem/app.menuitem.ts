@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
@@ -36,22 +36,18 @@ export class AppMenuitem {
     readonly key = computed(() => (this.parentKey() ? `${this.parentKey()}-${this.index()}` : String(this.index())));
 
     constructor() {
-        this.layoutService.menuSource$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((value) => {
-                queueMicrotask(() => {
-                    const currentKey = this.key();
-                    if (value.routeEvent) {
-                        this.active.set(value.key === currentKey || value.key.startsWith(`${currentKey}-`));
-                    } else if (value.key !== currentKey && !value.key.startsWith(`${currentKey}-`)) {
-                        this.active.set(false);
-                    }
-                });
+        this.layoutService.menuSource$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((value) => {
+            queueMicrotask(() => {
+                const currentKey = this.key();
+                if (value.routeEvent) {
+                    this.active.set(value.key === currentKey || value.key.startsWith(`${currentKey}-`));
+                } else if (value.key !== currentKey && !value.key.startsWith(`${currentKey}-`)) {
+                    this.active.set(false);
+                }
             });
+        });
 
-        this.layoutService.resetSource$
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => this.active.set(false));
+        this.layoutService.resetSource$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.active.set(false));
 
         this.router.events
             .pipe(
