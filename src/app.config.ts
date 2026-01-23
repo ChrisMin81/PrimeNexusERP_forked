@@ -12,7 +12,7 @@ import { LoadingService } from '@/services/loading/loading.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [
-        provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation(), withViewTransitions()),
+        provideRouter(appRoutes, withInMemoryScrolling({ anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled' }), withEnabledBlockingInitialNavigation(), withViewTransitions({ skipInitialTransition: true })),
         provideHttpClient(withInterceptors([fakeBackendInterceptor, authInterceptorFn, authErrorInterceptorFn, loggingInterceptor]), withFetch()),
         provideZonelessChangeDetection(),
         providePrimeNG({
