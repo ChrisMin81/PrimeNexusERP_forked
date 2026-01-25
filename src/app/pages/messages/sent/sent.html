@@ -8,7 +8,6 @@
                 <app-mail-toolbar
                     title="Sent"
                     [count]="messages?.length ?? 0"
-                    searchPlaceholder="Search messages"
                     searchLabel="Search sent messages"
                     [loading]="loadingService.loading()"
                     (searchChange)="onSearch($event)"

@@ -12,7 +12,7 @@ import { FloatLabelInput } from '@/pages/common/components/input/float-label-inp
 })
 export class SearchInput {
     value = input<string>('');
-    placeholder = input<string>('Search');
+    label = input<string>('Search');
     ariaLabel = input<string>('Search');
     autocomplete = input<'off' | 'on'>('off');
     valueChange = output<string>();

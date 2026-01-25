@@ -1,8 +1,8 @@
 <div class="global-search" aria-label="Global search">
-    <app-search-input
+    <app-float-label-input
         [value]="searchTerm()"
-        placeholder="Search messages and navigation"
-        ariaLabel="Global search"
+        label="Global Search"
+        aria-label="Global search"
         autocomplete="on"
         (valueChange)="onSearchChange($event)"
     />

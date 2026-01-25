@@ -23,7 +23,7 @@
         <app-search-input
             class="w-full md:w-25rem"
             [value]="''"
-            [placeholder]="searchPlaceholder()"
+            [label]="searchLabel()"
             [ariaLabel]="searchLabel()"
             (valueChange)="searchChange.emit($event)"
             [autocomplete]="autocomplete()"

@@ -8,8 +8,7 @@
                 <app-mail-toolbar
                     title="Drafts"
                     [count]="messages?.length ?? 0"
-                    searchPlaceholder="Search drafts"
-                    searchLabel="Search drafts"
+                    searchLabel="Search Drafts"
                     [loading]="loadingService.loading()"
                     (searchChange)="onSearch($event)"
                     (refresh)="refresh()"
@@ -59,7 +58,7 @@
                                             pButton
                                             severity="primary"
                                             [text]="true"
-                                            ariaLabel="Edit"
+                                            aria-label="Edit"
                                             [routerLink]="['/pages/messages/compose']"
                                             [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.content, draftId: message.id }"
                                             (click)="$event.stopPropagation()"
@@ -70,7 +69,7 @@
                                             pButton
                                             severity="secondary"
                                             [text]="true"
-                                            ariaLabel="Send"
+                                            aria-label="Send"
                                             [routerLink]="['/pages/messages/compose']"
                                             [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.content, draftId: message.id }"
                                             (click)="$event.stopPropagation()"

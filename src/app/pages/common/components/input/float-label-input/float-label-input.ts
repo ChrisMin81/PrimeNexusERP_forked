@@ -1,4 +1,4 @@
-import { Component, computed, input, model, output } from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 import { BaseInputComponent } from '@/pages/common/components/input/base-input.component';
 import { FloatLabelComponent } from '@/pages/common/components/input/float-label/float-label.component';
 import { FormsModule } from '@angular/forms';
@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
                 [disabled]="disabled()"
                 [readonly]="readonly()"
                 [attr.maxlength]="maxlength() ?? null"
-                [attr.placeholder]="placeholder() ?? null"
                 [attr.variant]="inputVariant()"
                 [autocomplete]="autocomplete()"
                 [(value)]="value"
@@ -33,7 +32,6 @@ export class FloatLabelInput {
     value = model<string | null>(null);
 
     // Signal Inputs (Read-only within the component)
-    placeholder = input<string | null | undefined>(undefined);
     autocomplete = input<'off' | 'on'>('off');
     type = input<string>('text');
     id = input<string | undefined>(undefined);

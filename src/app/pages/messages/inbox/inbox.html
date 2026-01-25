@@ -8,8 +8,7 @@
                 <app-mail-toolbar
                     title="Inbox"
                     [count]="messages?.length ?? 0"
-                    searchPlaceholder="Search messages"
-                    searchLabel="Search inbox"
+                    searchLabel="Search Inbox"
                     [loading]="loadingService.loading()"
                     (searchChange)="onSearch($event)"
                     (refresh)="refresh()"

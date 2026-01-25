@@ -16,7 +16,6 @@ export class MailToolbar {
     title = input<string>('Mail');
     subtitle = input<string | null>(null);
     count = input<number>(0);
-    searchPlaceholder = input<string>('Search');
     searchLabel = input<string>('Search');
     loading = input<boolean>(false);
     showCompose = input<boolean>(true);

@@ -6,7 +6,7 @@ import { TagModule } from 'primeng/tag';
 import { MenuModelService } from '@/layout/service/menu-model.service';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { Message } from '@/pages/messages/models/message';
-import { SearchInput } from '@/pages/common/components/search-input/search-input';
+import { FloatLabelInput } from '@/pages/common/components/input/float-label-input/float-label-input';
 
 type SearchResultType = 'menu' | 'message';
 
@@ -21,7 +21,7 @@ interface SearchResult {
 
 @Component({
     selector: 'app-global-search',
-    imports: [CommonModule, RouterModule, SearchInput, TagModule],
+    imports: [CommonModule, RouterModule, TagModule, FloatLabelInput],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './global-search.component.html',
     styleUrl: './global-search.component.scss'
@@ -31,7 +31,7 @@ export class GlobalSearchComponent {
     private mailService = inject(MailService);
     private router = inject(Router);
 
-    searchTerm = signal('');
+    searchTerm = signal<string>('');
     normalizedTerm = computed(() => this.searchTerm().trim().toLowerCase());
 
     private menuItems = computed(() => this.menuModel.getMenuItems());
@@ -101,8 +101,10 @@ export class GlobalSearchComponent {
     hasQuery = computed(() => this.normalizedTerm().length > 0);
     hasResults = computed(() => this.groupedResults().some((group) => group.items.length > 0));
 
-    onSearchChange(term: string) {
-        this.searchTerm.set(term);
+    onSearchChange(term: string | null | undefined) {
+        if (!!term) {
+            this.searchTerm.set(term);
+        }
     }
 
     navigateTo(result: SearchResult) {
