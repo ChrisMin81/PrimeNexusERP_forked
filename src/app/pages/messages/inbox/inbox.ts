@@ -97,11 +97,6 @@ export class Inbox {
             return;
         }
         this.deletingId.set(id);
-        this.mailService
-            .deleteInboxMessage(id)
-            .pipe(finalize(() => this.deletingId.set(null)))
-            .subscribe({
-                error: (error) => this.logger.trace('Failed to delete inbox message', error)
-            });
+        this.mailService.deleteInboxMessage(this.deletingId);
     }
 }

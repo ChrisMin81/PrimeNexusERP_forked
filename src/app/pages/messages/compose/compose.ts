@@ -47,7 +47,7 @@ export class Compose {
         this.recipientInput.set(value);
     }
 
-    async send() {
+    send() {
         if (this.loadingService.loading()) {
             return;
         }
@@ -65,22 +65,14 @@ export class Compose {
 
         const { recipients, subject, content } = this.form.getRawValue();
 
-        try {
-            await firstValueFrom(
-                this.loadingService.showLoaderUntilCompleted(
-                    this.mailService.sendMail({
-                        recipients,
-                        subject,
-                        content,
-                        draftId: this.draftId() ?? undefined
-                    })
-                )
-            );
-            this.router.navigate(['/pages/messages/sent']);
-        } catch (error: unknown) {
-            const message = (error as Error)?.message ?? 'Could not send message.';
-            this.sendError.set(message);
-        }
+        this.mailService.sendMail({
+            recipients,
+            subject,
+            content,
+            draftId: this.draftId() ?? undefined
+        });
+
+        this.router.navigate(['/pages/messages/sent']);
     }
 
     addRecipient(event?: Event) {

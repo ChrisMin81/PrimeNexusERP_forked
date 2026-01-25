@@ -83,9 +83,6 @@ export class Sent {
             return;
         }
         this.deletingId.set(id);
-        this.mailService
-            .deleteSentMessage(id)
-            .pipe(finalize(() => this.deletingId.set(null)))
-            .subscribe();
+        this.mailService.deleteSentMessage(this.deletingId);
     }
 }

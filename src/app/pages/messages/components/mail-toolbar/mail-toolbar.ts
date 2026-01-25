@@ -20,6 +20,7 @@ export class MailToolbar {
     searchLabel = input<string>('Search');
     loading = input<boolean>(false);
     showCompose = input<boolean>(true);
+    autocomplete   = input<'off' | 'on'>('off');
 
     refresh = output<void>();
     compose = output<void>();

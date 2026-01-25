@@ -1,16 +1,18 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
 import { Message } from '@/pages/messages/models/message';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of, take, tap } from 'rxjs';
+import { catchError, finalize, map, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
 import { Attachment } from '@/pages/messages/models/attachment';
 import { LoadingService } from '@/services/loading/loading.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class MailService {
     private http = inject(HttpClient);
     private logger = inject(LoggerService);
     private loadingService = inject(LoadingService);
+    private injector = inject(Injector);
     private inboxSignal = signal<Message[] | undefined>(undefined);
     private sentSignal = signal<Message[] | undefined>(undefined);
     private draftsSignal = signal<Message[] | undefined>(undefined);
@@ -36,42 +38,63 @@ export class MailService {
         return this.draftsSignal.asReadonly();
     }
 
-    sendMail(payload: SendMailPayload) {
-        return this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', payload)).pipe(
-            take(1),
-            tap((message) => {
-                const current = this.sentSignal() ?? [];
-                this.sentSignal.set([message, ...current]);
-                this.sentLoaded = true;
-                this.logger.trace('Sent message created:', message);
-                if (payload.draftId) {
-                    const drafts = this.draftsSignal() ?? [];
-                    this.draftsSignal.set(drafts.filter((draft) => draft.id !== payload.draftId));
-                }
-            })
+    sendMail(payload: SendMailPayload): Signal<Message | undefined> {
+        return toSignal(
+            this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', payload)).pipe(
+                take(1),
+                tap((message) => {
+                    const current = this.sentSignal() ?? [];
+                    this.sentSignal.set([message, ...current]);
+                    this.sentLoaded = true;
+                    this.logger.trace('Sent message created:', message);
+                    if (payload.draftId) {
+                        const drafts = this.draftsSignal() ?? [];
+                        this.draftsSignal.set(drafts.filter((draft) => draft.id !== payload.draftId));
+                    }
+                })
+            ),
+            { injector: this.injector }
         );
     }
 
-    deleteInboxMessage(id: number) {
-        return this.loadingService.showLoaderUntilCompleted(this.http.delete<void>(`/api/messages/inbox/${id}`)).pipe(
-            take(1),
-            tap(() => {
-                const current = this.inboxSignal() ?? [];
-                this.inboxSignal.set(current.filter((message) => message.id !== id));
-                this.logger.trace('Deleted inbox message:', id);
-            })
+    deleteInboxMessage(idToDelete: WritableSignal<number | null>) {
+        return this.deleteMessage('inbox', idToDelete);
+    }
+
+    deleteSentMessage(id: WritableSignal<number | null>) {
+        return this.deleteMessage('sent', id);
+    }
+
+    deleteMessage(box: Mailbox, idToDelete: WritableSignal<number | null>) {
+        const id = idToDelete();
+        return toSignal(
+            this.loadingService.showLoaderUntilCompleted(this.http.delete<void>(`/api/messages/${box}/${id}`)).pipe(
+                catchError((err) => {
+                    this.logger.trace(`Failed to delete ${box} message`, err);
+                    return throwError(() => err);
+                }),
+                take(1),
+                tap(() => {
+                    const mailBox = this.getMessages(box);
+                    const current = mailBox() ?? [];
+                    mailBox.set(current.filter((message) => message.id !== id));
+                    this.logger.trace(`Deleted ${box} message: ${id}`);
+                }),
+                finalize(() => idToDelete.set(null))
+            ),
+            { injector: this.injector, initialValue: null }
         );
     }
 
-    deleteSentMessage(id: number) {
-        return this.loadingService.showLoaderUntilCompleted(this.http.delete<void>(`/api/messages/sent/${id}`)).pipe(
-            take(1),
-            tap(() => {
-                const current = this.sentSignal() ?? [];
-                this.sentSignal.set(current.filter((message) => message.id !== id));
-                this.logger.trace('Deleted sent message:', id);
-            })
-        );
+    private getMessages(box: Mailbox) {
+        switch (box) {
+            case 'inbox':
+                return this.inboxSignal;
+            case 'sent':
+                return this.sentSignal;
+            case 'drafts':
+                return this.draftsSignal;
+        }
     }
 
     refreshInbox(offset = 0, limit = 25) {

@@ -1,12 +1,8 @@
-<span class="p-input-icon-left w-full">
-    <i class="pi pi-search"></i>
-    <input
-        pInputText
-        type="text"
-        class="w-full"
-        [value]="value()"
-        (input)="onInput($event)"
-        [placeholder]="placeholder()"
-        [attr.aria-label]="ariaLabel()"
-    />
-</span>
+<app-float-label-input label="Search"
+                       [value]="value()"
+                       (input)="onInput($event)"
+                       [placeholder]="placeholder()"
+                       [attr.aria-label]="ariaLabel()"
+                       [autocomplete]="autocomplete()"
+/>
+

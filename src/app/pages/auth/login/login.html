@@ -26,11 +26,11 @@
                 </div>
 
                 <div [formGroup]="form">
-                    <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                    <input pInputText id="email1" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" formControlName="email" />
+                    <label for="email" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+                    <input pInputText id="email" type="text" placeholder="Email address" class="w-full md:w-120 mb-8" formControlName="email" />
 
-                    <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                    <p-password id="password1" formControlName="password" placeholder="Password" [toggleMask]="true" class="mb-4" [fluid]="true" [feedback]="false"></p-password>
+                    <label for="password" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                    <p-password id="password" formControlName="password" placeholder="Password" [toggleMask]="true" class="mb-4" [fluid]="true" [feedback]="false"></p-password>
 
                     <p-button label="Sign In" class="w-full" (click)="login()"></p-button>
                 </div>
