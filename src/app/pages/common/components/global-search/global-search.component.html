@@ -1,0 +1,40 @@
+<div class="global-search" aria-label="Global search">
+    <app-search-input
+        [value]="searchTerm()"
+        placeholder="Search messages and navigation"
+        ariaLabel="Global search"
+        autocomplete="on"
+        (valueChange)="onSearchChange($event)"
+    />
+
+    @if (hasQuery()) {
+        <div class="global-search__panel" aria-live="polite">
+            @if (!hasResults()) {
+                <div class="global-search__empty">No results found.</div>
+            }
+
+            @for (group of groupedResults(); track group.label) {
+                @if (group.items.length) {
+                    <div class="global-search__group">
+                        <div class="global-search__group-title">{{ group.label }}</div>
+                        <ul class="global-search__list" role="listbox">
+                            @for (item of group.items; track item.id) {
+                                <li class="global-search__item" role="option" (click)="navigateTo(item)">
+                                    <div class="global-search__item-main">
+                                        <span class="global-search__item-label">{{ item.label }}</span>
+                                        @if (item.badge) {
+                                            <p-tag [value]="item.badge" severity="info" rounded="true"></p-tag>
+                                        }
+                                    </div>
+                                    @if (item.description) {
+                                        <div class="global-search__item-desc">{{ item.description }}</div>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>

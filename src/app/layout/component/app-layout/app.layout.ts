@@ -7,12 +7,13 @@ import { AppTopbar } from '@/layout/component/app-topbar/app.topbar';
 import { AppSidebar } from '@/layout/component/app-sidebar/app.sidebar';
 import { AppFooter } from '@/layout/component/app-footer/app.footer';
 import { LayoutService } from '@/layout/service/layout.service';
+import { GlobalSearchComponent } from '@/pages/common/components/global-search/global-search.component';
 
 @Component({
     selector: 'app-layout',
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter],
+    imports: [CommonModule, AppTopbar, AppSidebar, RouterModule, AppFooter, GlobalSearchComponent],
     templateUrl: './app.layout.html',
     styleUrl: './app.layout.scss'
 })

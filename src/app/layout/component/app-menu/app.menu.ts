@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from '@/layout/component/app-menuitem/app.menuitem';
-import { AuthService } from '@/pages/auth/auth-service';
+import { MenuModelService } from '@/layout/service/menu-model.service';
 
 @Component({
     selector: 'app-menu',
@@ -15,60 +15,9 @@ import { AuthService } from '@/pages/auth/auth-service';
 })
 export class AppMenu {
     model: MenuItem[] = [];
-    private authService = inject(AuthService);
+    private menuModel = inject(MenuModelService);
 
     ngOnInit() {
-        this.model = [
-            {
-                label: 'Home',
-                items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashboard'] }]
-            },
-            {
-                label: 'Messages',
-                icon: 'pi pi-fw pi-briefcase',
-                routerLink: ['messages'],
-                items: [
-                    {
-                        label: 'Compose',
-                        icon: 'pi pi-fw pi-inbox',
-                        routerLink: ['pages', 'messages', 'compose']
-                    },
-                    {
-                        label: 'Inbox',
-                        icon: 'pi pi-fw pi-inbox',
-                        routerLink: ['pages', 'messages', 'inbox']
-                    },
-                    {
-                        label: 'Drafts',
-                        icon: 'pi pi-fw pi-file',
-                        routerLink: ['pages', 'messages', 'drafts']
-                    },
-                    {
-                        label: 'Sent',
-                        icon: 'pi pi-fw pi-send',
-                        routerLink: ['pages', 'messages', 'sent']
-                    }
-                ],
-                expanded: true
-            },
-            {
-                label: 'Auth',
-                icon: 'pi pi-fw pi-user',
-                items: [
-                    {
-                        label: 'Login',
-                        icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/login'],
-                        visible: !this.authService.isAuthenticated()
-                    },
-                    {
-                        label: 'Logout',
-                        icon: 'pi pi-fw pi-sign-in',
-                        routerLink: ['/auth/logout'],
-                        visible: this.authService.isAuthenticated()
-                    }
-                ]
-            }
-        ];
+        this.model = this.menuModel.getMenuItems();
     }
 }
