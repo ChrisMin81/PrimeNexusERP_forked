@@ -8,7 +8,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { Router, RouterModule } from '@angular/router';
-import { LoggerService } from '@/services/logger/logger';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
@@ -16,6 +15,7 @@ import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolb
 import { Attachment } from '@/pages/messages/models/attachment';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
+import { LoggerService } from '@/services/logger/logger';
 
 @Component({
     selector: 'app-inbox',
@@ -91,7 +91,8 @@ export class Inbox {
 
     openAttachments(event: Event, message: Message) {
         event.stopPropagation();
-        this.attachmentList.set(message.attachments);
+        this.logger.debug(`Opening attachments for message ${message.id}`, message.attachments.map((a) => a.name));
+        this.attachmentList.set([...message.attachments]);
         this.attachmentsDialogOpen.set(true);
     }
 
