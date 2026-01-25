@@ -1,0 +1,32 @@
+.p-dialog {
+    border-radius: 1rem;
+}
+
+.dialog__content {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.dialog__icon {
+    width: 3rem;
+    height: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    background: var(--p-red-50);
+    color: var(--p-red-500);
+}
+
+.dialog__message {
+    margin: 0;
+    color: var(--p-surface-700);
+}
+
+.dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}

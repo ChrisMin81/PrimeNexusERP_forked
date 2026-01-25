@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
 import { Message } from '@/pages/messages/models/message';
 import { HttpClient } from '@angular/common/http';
-import { catchError, finalize, map, of, take, tap, throwError } from 'rxjs';
+import { catchError, finalize, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
 import { Attachment } from '@/pages/messages/models/attachment';
 import { LoadingService } from '@/services/loading/loading.service';

@@ -69,7 +69,7 @@
                                 </td>
                                 <td class="text-right">
                                     <div class="flex justify-end gap-2">
-                                        <button pButton type="button" severity="danger" [text]="true" [loading]="deletingId() === message.id" aria-label="Delete" (click)="deleteMessage(message.id); $event.stopPropagation()">
+                                        <button pButton type="button" severity="danger" [text]="true" [loading]="deletingId() === message.id" aria-label="Delete" (click)="requestDelete(message); $event.stopPropagation()">
                                             <span pButtonIcon class="pi pi-trash"></span>
                                         </button>
                                         <a pButton severity="secondary" [text]="true" aria-label="Open" [routerLink]="['/pages/messages/sent', message.id]" (click)="$event.stopPropagation()">
@@ -101,4 +101,15 @@
     [visible]="attachmentsDialogOpen()"
     (close)="closeAttachments()"
     header="Attachments"
+/>
+
+<app-confirm-dialog
+    [visible]="confirmDialogVisible()"
+    header="Delete message"
+    [message]="confirmDialogMessage()"
+    confirmLabel="Delete"
+    cancelLabel="Cancel"
+    [confirmLoading]="deletingId() !== null"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()"
 />

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
@@ -8,20 +8,18 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { Router, RouterModule } from '@angular/router';
-import { finalize } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { Attachment } from '@/pages/messages/models/attachment';
-import { DialogModule } from 'primeng/dialog';
-
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
+import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-inbox',
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay],
+    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './inbox.html',
     styleUrl: './inbox.scss'
@@ -37,6 +35,15 @@ export class Inbox {
     filteredMessages = signal<Message[]>([]);
     attachmentList = signal<Attachment[]>([]);
     attachmentsDialogOpen = signal(false);
+    confirmDialogVisible = signal(false);
+    messagePendingDeletion = signal<Message | null>(null);
+    confirmDialogMessage = computed(() => {
+        const pending = this.messagePendingDeletion();
+        if (!pending) {
+            return 'Delete this message?';
+        }
+        return `Delete "${pending.subject}" from your inbox?`;
+    });
 
     constructor() {
         effect(() => {
@@ -92,11 +99,28 @@ export class Inbox {
         this.attachmentsDialogOpen.set(false);
     }
 
-    deleteMessage(id: number) {
-        if (this.deletingId() === id) {
+    requestDelete(message: Message) {
+        if (this.deletingId() !== null) {
             return;
         }
-        this.deletingId.set(id);
+        this.messagePendingDeletion.set(message);
+        this.confirmDialogVisible.set(true);
+    }
+
+    confirmDelete() {
+        const pending = this.messagePendingDeletion();
+        if (!pending) {
+            this.confirmDialogVisible.set(false);
+            return;
+        }
+        this.deletingId.set(pending.id);
+        this.confirmDialogVisible.set(false);
+        this.messagePendingDeletion.set(null);
         this.mailService.deleteInboxMessage(this.deletingId);
+    }
+
+    cancelDelete() {
+        this.confirmDialogVisible.set(false);
+        this.messagePendingDeletion.set(null);
     }
 }

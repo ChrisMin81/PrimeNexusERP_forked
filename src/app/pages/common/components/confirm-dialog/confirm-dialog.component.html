@@ -1,0 +1,45 @@
+<p-dialog
+    [visible]="visible()"
+    [modal]="true"
+    [closable]="dismissible()"
+    [draggable]="false"
+    [resizable]="false"
+    [header]="header()"
+    (onHide)="onHide()"
+    [style.width.rem]="24"
+    [breakpoints]="{ '960px': '22rem', '640px': '20rem' }"
+>
+    <div class="dialog__content">
+        <div class="dialog__icon" aria-hidden="true">
+            <span class="pi pi-exclamation-triangle"></span>
+        </div>
+        <div class="dialog__text">
+            <p class="dialog__message">{{ message() }}</p>
+        </div>
+    </div>
+
+    <div class="dialog__actions">
+        <button
+            type="button"
+            pButton
+            [text]="true"
+            severity="secondary"
+            (click)="onCancelClick()"
+            [attr.aria-label]="cancelLabel()"
+        >
+            <span class="pi pi-times mr-2" aria-hidden="true"></span>
+            {{ cancelLabel() }}
+        </button>
+        <button
+            type="button"
+            pButton
+            [severity]="confirmSeverity()"
+            [loading]="confirmLoading()"
+            (click)="onConfirmClick()"
+            [attr.aria-label]="confirmLabel()"
+        >
+            <span class="pi pi-trash mr-2" aria-hidden="true"></span>
+            {{ confirmLabel() }}
+        </button>
+    </div>
+</p-dialog>
