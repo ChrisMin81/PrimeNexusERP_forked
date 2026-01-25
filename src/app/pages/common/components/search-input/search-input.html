@@ -1,8 +1,12 @@
-<app-float-label-input label="Search"
-                       [value]="value()"
-                       (input)="onInput($event)"
-                       [label]="label()"
-                       [attr.aria-label]="ariaLabel()"
-                       [autocomplete]="autocomplete()"
+<app-float-label-input
+    label="Search"
+    [value]="value()"
+    (input)="onInput($event)"
+    [label]="label()"
+    [attr.aria-label]="ariaLabel()"
+    [placeholder]="placeholder()"
+    [autocomplete]="autocomplete()"
+    [clearable]="clearable()"
+    [clearAriaLabel]="clearAriaLabel()"
+    (onCleared)="onCleared()"
 />
-

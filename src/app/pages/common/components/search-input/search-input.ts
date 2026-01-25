@@ -15,10 +15,17 @@ export class SearchInput {
     label = input<string>('Search');
     ariaLabel = input<string>('Search');
     autocomplete = input<'off' | 'on'>('off');
+    clearable = input<boolean>(true);
+    clearAriaLabel = input<string>('Clear search');
+    placeholder = input<string>('Search');
     valueChange = output<string>();
 
     onInput(event: Event) {
         const val = (event.target as HTMLInputElement | null)?.value ?? '';
         this.valueChange.emit(val);
+    }
+
+    onCleared() {
+        this.valueChange.emit('');
     }
 }

@@ -5,6 +5,7 @@
         aria-label="Global search"
         autocomplete="on"
         (valueChange)="onSearchChange($event)"
+        [clearable]="true"
     />
 
     @if (hasQuery()) {

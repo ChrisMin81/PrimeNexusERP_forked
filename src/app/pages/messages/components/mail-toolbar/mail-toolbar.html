@@ -27,6 +27,7 @@
             [ariaLabel]="searchLabel()"
             (valueChange)="searchChange.emit($event)"
             [autocomplete]="autocomplete()"
+            [clearable]="true"
         />
         @if (subtitle()) {
             <div class="flex items-center gap-2 text-sm text-muted-color">

@@ -16,10 +16,14 @@ import { FormsModule } from '@angular/forms';
                 [readonly]="readonly()"
                 [attr.maxlength]="maxlength() ?? null"
                 [attr.variant]="inputVariant()"
+                [placeholder]="placeholder() ?? null"
                 [autocomplete]="autocomplete()"
                 [(value)]="value"
                 (blur)="onBlur.emit($event)"
                 (focus)="onFocus.emit($event)"
+                [clearable]="clearable()"
+                [clearAriaLabel]="clearAriaLabel()"
+                (cleared)="onCleared.emit()"
                 [class.p-inputtext-sm]="size() === 'small'"
                 [class.p-inputtext-lg]="size() === 'large'"
             />
@@ -32,6 +36,7 @@ export class FloatLabelInput {
     value = model<string | null>(null);
 
     // Signal Inputs (Read-only within the component)
+    placeholder = input<string | null | undefined>(undefined);
     autocomplete = input<'off' | 'on'>('off');
     type = input<string>('text');
     id = input<string | undefined>(undefined);
@@ -43,8 +48,11 @@ export class FloatLabelInput {
     size = input<'small' | 'large' | undefined>(undefined);
     inputVariant = input<'filled' | 'outlined'>('outlined');
     variant = input<'over' | 'on' | 'in'>('on');
+    clearable = input<boolean>(false);
+    clearAriaLabel = input<string>('Clear input');
 
     // Custom Events
     onBlur = output<FocusEvent>();
     onFocus = output<FocusEvent>();
+    onCleared = output<void>();
 }

@@ -104,6 +104,8 @@ export class GlobalSearchComponent {
     onSearchChange(term: string | null | undefined) {
         if (!!term) {
             this.searchTerm.set(term);
+        } else {
+            this.searchTerm.set('');
         }
     }
 
