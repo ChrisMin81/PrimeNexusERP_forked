@@ -7,12 +7,13 @@ import { layoutConfig, LayoutService } from '@/layout/service/layout.service';
 import { BadgeModule } from 'primeng/badge';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { AppConfigurator } from '@/layout/component/app-configurator/app.configurator';
+import { GlobalSearchComponent } from '@/pages/common/components/global-search/global-search.component';
 
 @Component({
     selector: 'app-topbar',
     standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [RouterModule, CommonModule, StyleClassModule, BadgeModule, AppConfigurator],
+    imports: [RouterModule, CommonModule, StyleClassModule, BadgeModule, AppConfigurator, GlobalSearchComponent],
     templateUrl: './app.topbar.html',
     styleUrl: './app.topbar.scss'
 })

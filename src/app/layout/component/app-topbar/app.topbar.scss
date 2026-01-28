@@ -1,1 +1,39 @@
-/* Topbar styles */
+.layout-topbar {
+    gap: 1rem;
+
+    .layout-topbar-logo-container {
+        flex-shrink: 0;
+    }
+
+    .layout-topbar-search {
+        flex: 1;
+        min-width: 16rem;
+        display: flex;
+        justify-content: center;
+        padding: 0 1rem;
+    }
+
+    .layout-topbar-search app-global-search {
+        width: 100%;
+    }
+}
+
+@media (max-width: 991px) {
+    .layout-topbar {
+        flex-wrap: wrap;
+        height: auto;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+
+        .layout-topbar-search {
+            order: 3;
+            width: 100%;
+            padding: 0.5rem 0 0;
+        }
+
+        .layout-topbar-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+    }
+}

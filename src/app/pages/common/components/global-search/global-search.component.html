@@ -1,5 +1,9 @@
-<div class="global-search" aria-label="Global search">
+<div class="relative w-full" aria-label="Global search">
     <app-float-label-input
+        #searchInput
+        class="w-full"
+        [styleClass]="'w-full'"
+        id="global-search-input"
         [value]="searchTerm()"
         label="Global Search"
         aria-label="Global search"
@@ -9,26 +13,33 @@
     />
 
     @if (hasQuery()) {
-        <div class="global-search__panel" aria-live="polite">
+        <div
+            class="bg-white absolute left-0 z-[1000] mt-2 w-full max-w-[calc(100vw-2rem)] sm:max-w-[38rem] max-h-[70vh] overflow-y-auto rounded-xl border border-[var(--p-content-border-color)] opacity-100 shadow-[var(--p-content-shadow)]"
+            aria-live="polite"
+        >
             @if (!hasResults()) {
-                <div class="global-search__empty">No results found.</div>
+                <div class="px-4 py-3 text-[var(--p-surface-600)]">No results found.</div>
             }
 
             @for (group of groupedResults(); track group.label) {
                 @if (group.items.length) {
-                    <div class="global-search__group">
-                        <div class="global-search__group-title">{{ group.label }}</div>
-                        <ul class="global-search__list" role="listbox">
+                    <div class="px-4 py-3 border-b last:border-b-0 border-[var(--p-content-border-color)]">
+                        <div class="mb-2 font-semibold text-[var(--p-surface-700)]">{{ group.label }}</div>
+                        <ul class="m-0 list-none space-y-2 p-0" role="listbox">
                             @for (item of group.items; track item.id) {
-                                <li class="global-search__item" role="option" (click)="navigateTo(item)">
-                                    <div class="global-search__item-main">
-                                        <span class="global-search__item-label">{{ item.label }}</span>
+                                <li
+                                    class="cursor-pointer rounded-lg px-3 py-2 transition-colors duration-200 hover:bg-[var(--p-surface-100)] focus-within:bg-[var(--p-surface-100)]"
+                                    role="option"
+                                    (click)="navigateTo(item)"
+                                >
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-semibold text-[var(--p-surface-900)]">{{ item.label }}</span>
                                         @if (item.badge) {
                                             <p-tag [value]="item.badge" severity="info" rounded="true"></p-tag>
                                         }
                                     </div>
                                     @if (item.description) {
-                                        <div class="global-search__item-desc">{{ item.description }}</div>
+                                        <div class="text-sm text-[var(--p-surface-600)]">{{ item.description }}</div>
                                     }
                                 </li>
                             }

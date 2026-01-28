@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
@@ -7,6 +7,8 @@ import { MenuModelService } from '@/layout/service/menu-model.service';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { Message } from '@/pages/messages/models/message';
 import { FloatLabelInput } from '@/pages/common/components/input/float-label-input/float-label-input';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { GlobalHotkeyService } from '@/pages/common/services/global-hotkey.service';
 
 type SearchResultType = 'menu' | 'message';
 
@@ -30,6 +32,9 @@ export class GlobalSearchComponent {
     private menuModel = inject(MenuModelService);
     private mailService = inject(MailService);
     private router = inject(Router);
+    private destroyRef = inject(DestroyRef);
+    private globalHotkeys = inject(GlobalHotkeyService);
+    private document = inject(DOCUMENT);
 
     searchTerm = signal<string>('');
     normalizedTerm = computed(() => this.searchTerm().trim().toLowerCase());
@@ -112,6 +117,21 @@ export class GlobalSearchComponent {
     navigateTo(result: SearchResult) {
         this.router.navigate(result.route);
         this.searchTerm.set('');
+    }
+
+    constructor() {
+        this.globalHotkeys.ctrlF$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+            this.searchTerm.set('');
+            this.focusSearchInput();
+        });
+    }
+
+    private focusSearchInput() {
+        const inputEl = this.document.querySelector('input#global-search-input') as HTMLInputElement | null;
+        if (inputEl) {
+            inputEl.focus();
+            inputEl.select();
+        }
     }
 
     private flattenMenu(menu: MenuItem[], parentLabel?: string): Array<{ label: string; route: any[]; parentLabel?: string }> {
