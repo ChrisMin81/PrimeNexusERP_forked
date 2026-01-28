@@ -9,7 +9,6 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { Router, RouterModule } from '@angular/router';
-import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { Attachment } from '@/pages/messages/models/attachment';
@@ -18,7 +17,7 @@ import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-
 
 @Component({
     selector: 'app-sent',
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
+    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './sent.html',
     styleUrl: './sent.scss'
@@ -26,7 +25,6 @@ import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-
 export class Sent {
     private mailService = inject(MailService);
     router = inject(Router);
-    loadingService = inject(LoadingService);
     deletingId = signal<number | null>(null);
     messages$ = this.mailService.getSent();
     searchTerm = signal('');

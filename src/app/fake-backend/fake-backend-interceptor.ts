@@ -1,5 +1,5 @@
 import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
+import { defer, delay, of, throwError } from 'rxjs';
 import { AuthResult } from '@/pages/auth/model/authResult';
 import { AuthRequest } from '@/pages/auth/model/authRequest';
 import { Message } from '@/pages/messages/models/message';
@@ -103,6 +103,10 @@ let draftMessages: Message[] = [
     }
 ];
 
+const responseDelay = 5000;
+const respond = <T>(value: HttpResponse<T>) => defer(() => of(value).pipe(delay(responseDelay)));
+const respondError = (err: Error) => defer(() => throwError(() => err).pipe(delay(responseDelay)));
+
 export const fakeBackendInterceptor: HttpInterceptorFn = (req, next) => {
     switch (req.method) {
         case 'GET':
@@ -137,19 +141,18 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
         switch (req.url) {
             case 'http://localhost:9000/api/login':
                 if (req.body.email === 'christian.minatti@gmail.com' && !!req.body.password) {
-                    return of(new HttpResponse<AuthResult>({ status: 200, body: { idToken: 'ABCDEF', expiresIn: 28800 } })); // 28800 = 8h
+                    return respond(new HttpResponse<AuthResult>({ status: 200, body: { idToken: 'ABCDEF', expiresIn: 28800 } })); // 28800 = 8h
                 }
-                return throwError(
-                    () =>
-                        new Error('Invalid credentials', {
-                            cause: {
-                                status: 401,
-                                statusText: 'Unauthorized'
-                            }
-                        })
+                return respondError(
+                    new Error('Invalid credentials', {
+                        cause: {
+                            status: 401,
+                            statusText: 'Unauthorized'
+                        }
+                    })
                 );
             case 'http://localhost:9000/api/logout':
-                return of(new HttpResponse<AuthResult>({ status: 200, body: { idToken: '', expiresIn: -3600 } }));
+                return respond(new HttpResponse<AuthResult>({ status: 200, body: { idToken: '', expiresIn: -3600 } }));
         }
     }
 
@@ -170,7 +173,7 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
         if (draftId) {
             draftMessages = draftMessages.filter((draft) => draft.id !== draftId);
         }
-        return of(new HttpResponse({ status: 200, body: newMessage }));
+        return respond(new HttpResponse({ status: 200, body: newMessage }));
     }
 
     return next(req);
@@ -182,15 +185,15 @@ const GETRequestHandler: HttpInterceptorFn = (req, next) => {
     }
 
     if (req.url.includes('/api/messages/inbox')) {
-        return of(new HttpResponse({ status: 200, body: paginate(req, inboxMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, inboxMessages) }));
     }
 
     if (req.url.includes('/api/messages/sent')) {
-        return of(new HttpResponse({ status: 200, body: paginate(req, sentMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, sentMessages) }));
     }
 
     if (req.url.includes('/api/messages/drafts')) {
-        return of(new HttpResponse({ status: 200, body: paginate(req, draftMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, draftMessages) }));
     }
 
     if (isAuthRequest(req.body)) {
@@ -214,17 +217,17 @@ const DELETERequestHandler: HttpInterceptorFn = (req, next) => {
     if (req.url.includes('/api/messages/inbox/')) {
         const id = Number(req.url.split('/').pop());
         inboxMessages = inboxMessages.filter((message) => message.id !== id);
-        return of(new HttpResponse({ status: 200 }));
+        return respond(new HttpResponse({ status: 200 }));
     }
 
     if (req.url.includes('/api/messages/sent/')) {
         const id = Number(req.url.split('/').pop());
         sentMessages = sentMessages.filter((message) => message.id !== id);
-        return of(new HttpResponse({ status: 200 }));
+        return respond(new HttpResponse({ status: 200 }));
     }
 
     if (isAuthRequest(req.body) && req.url === 'http://localhost:9000/api/logout') {
-        return of(new HttpResponse<AuthResult>({ status: 200, body: { idToken: '', expiresIn: -3600 } }));
+        return respond(new HttpResponse<AuthResult>({ status: 200, body: { idToken: '', expiresIn: -3600 } }));
     }
 
     return next(req);

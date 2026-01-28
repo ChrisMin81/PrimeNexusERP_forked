@@ -3,7 +3,8 @@
 }
 
 @if ((!item().routerLink || item().items) && isVisible()) {
-    <a [attr.href]="item().url" (click)="itemClick($event)" [class]="item().styleClass || ''" [attr.target]="item().target" tabindex="0" pRipple>
+    <a [attr.href]="item().url" (click)="itemClick($event)" [class]="item().styleClass || ''"
+       [attr.target]="item().target" tabindex="0" pRipple>
         <i [class]="item().icon || ''" class="layout-menuitem-icon"></i>
         <span class="layout-menuitem-text">{{ item().label }}</span>
         @if (item().items) {

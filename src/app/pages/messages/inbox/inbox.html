@@ -1,4 +1,3 @@
-@let sourceMessages = messages$();
 @let messages = filteredMessages();
 
 <div class="grid grid-cols-12 gap-6">
@@ -9,91 +8,97 @@
                     title="Inbox"
                     [count]="messages?.length ?? 0"
                     searchLabel="Search Inbox"
-                    [loading]="loadingService.loading()"
                     (searchChange)="onSearch($event)"
                     (refresh)="refresh()"
                     (compose)="router.navigate(['/pages/messages/compose'])"
                     autocomplete="off"
                 />
 
-                @if (sourceMessages === undefined) {
-                    <div class="flex items-center justify-center min-h-16" aria-live="polite">
-                        <p-progressSpinner strokeWidth="4" class="w-2rem h-2rem"></p-progressSpinner>
-                    </div>
-                } @else {
-                    <p-table [value]="messages" dataKey="id" [rowHover]="true" aria-label="Inbox messages">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th class="w-3rem"></th>
-                                <th>Sender</th>
-                                <th>Subject</th>
-                                <th class="hidden lg:table-cell">Preview</th>
-                                <th class="w-8rem text-center">Attachments</th>
-                                <th class="w-10rem">Received</th>
-                                <th class="w-10rem text-right">Actions</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-message>
-                            <tr
-                                [class.bg-surface-100]="!message.isRead"
-                                [class.dark:bg-surface-800]="!message.isRead"
-                                [class.font-semibold]="!message.isRead"
-                                (click)="openMessage(message)"
-                                class="cursor-pointer"
-                            >
-                                <td>
-                                    <p-avatar label="{{ message.sender[0] }}" shape="circle" size="large"></p-avatar>
-                                </td>
-                                <td>
-                                    <div class="font-medium text-surface-900 dark:text-surface-0">{{ message.sender }}</div>
-                                    <div class="text-sm text-muted-color">{{ message.recipients.join(', ') }}</div>
-                                </td>
-                                <td>
-                                    <div class="font-semibold text-surface-900 dark:text-surface-0">{{ message.subject }}</div>
-                                    @if (!message.isRead) {
-                                        <p-tag value="New" severity="success" rounded="true" class="mt-1"></p-tag>
-                                    }
-                                </td>
-                                <td class="hidden lg:table-cell">
-                                    <span class="text-sm text-muted-color block max-w-64 truncate">{{ message.content }}</span>
-                                </td>
-                                <td class="text-center">
-                                    @if (message.attachments.length) {
-                                        <p-tag value="{{ message.attachments.length }}" severity="info" icon="pi pi-paperclip" (click)="openAttachments($event, message)"></p-tag>
-                                    } @else {
-                                        <span class="text-muted-color">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="text-sm text-muted-color">{{ message.timestamp | date: 'MMM d, y, h:mm a' }}</div>
-                                </td>
-                                <td class="text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button pButton type="button" severity="secondary" [text]="true" aria-label="Reply" (click)="reply(message); $event.stopPropagation()">
-                                            <span pButtonIcon class="pi pi-reply"></span>
-                                        </button>
-                                        <button pButton type="button" severity="danger" [text]="true" [loading]="deletingId() === message.id" aria-label="Delete" (click)="requestDelete(message); $event.stopPropagation()">
-                                            <span pButtonIcon class="pi pi-trash"></span>
-                                        </button>
-                                        <a pButton severity="secondary" [text]="true" aria-label="Open" [routerLink]="['/pages/messages/inbox', message.id]" (click)="$event.stopPropagation()">
-                                            <span pButtonIcon class="pi pi-chevron-right"></span>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="emptymessage">
-                            <tr>
-                                <td colspan="7">
-                                    <div class="flex flex-col items-center justify-center py-8 text-muted-color">
-                                        <i class="pi pi-inbox text-2xl mb-3"></i>
-                                        <span>No messages found.</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                }
+                <p-table [value]="messages" dataKey="id" [rowHover]="true" aria-label="Inbox messages">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th class="w-3rem"></th>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th class="hidden lg:table-cell">Preview</th>
+                            <th class="w-8rem text-center">Attachments</th>
+                            <th class="w-10rem">Received</th>
+                            <th class="w-10rem text-right">Actions</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-message>
+                        <tr
+                            [class.bg-surface-100]="!message.isRead"
+                            [class.dark:bg-surface-800]="!message.isRead"
+                            [class.font-semibold]="!message.isRead"
+                            (click)="openMessage(message)"
+                            class="cursor-pointer"
+                        >
+                            <td>
+                                <p-avatar label="{{ message.sender[0] }}" shape="circle" size="large"></p-avatar>
+                            </td>
+                            <td>
+                                <div class="font-medium text-surface-900 dark:text-surface-0">{{ message.sender }}
+                                </div>
+                                <div class="text-sm text-muted-color">{{ message.recipients.join(', ') }}</div>
+                            </td>
+                            <td>
+                                <div
+                                    class="font-semibold text-surface-900 dark:text-surface-0">{{ message.subject }}
+                                </div>
+                                @if (!message.isRead) {
+                                    <p-tag value="New" severity="success" rounded="true" class="mt-1"></p-tag>
+                                }
+                            </td>
+                            <td class="hidden lg:table-cell">
+                                    <span
+                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.content }}</span>
+                            </td>
+                            <td class="text-center">
+                                @if (message.attachments.length) {
+                                    <p-tag value="{{ message.attachments.length }}" severity="info"
+                                           icon="pi pi-paperclip"
+                                           (click)="openAttachments($event, message)"></p-tag>
+                                } @else {
+                                    <span class="text-muted-color">-</span>
+                                }
+                            </td>
+                            <td>
+                                <div
+                                    class="text-sm text-muted-color">{{ message.timestamp | date: 'MMM d, y, h:mm a' }}
+                                </div>
+                            </td>
+                            <td class="text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button pButton type="button" severity="secondary" [text]="true"
+                                            aria-label="Reply" (click)="reply(message); $event.stopPropagation()">
+                                        <span pButtonIcon class="pi pi-reply"></span>
+                                    </button>
+                                    <button pButton type="button" severity="danger" [text]="true"
+                                            [loading]="deletingId() === message.id" aria-label="Delete"
+                                            (click)="requestDelete(message); $event.stopPropagation()">
+                                        <span pButtonIcon class="pi pi-trash"></span>
+                                    </button>
+                                    <a pButton severity="secondary" [text]="true" aria-label="Open"
+                                       [routerLink]="['/pages/messages/inbox', message.id]"
+                                       (click)="$event.stopPropagation()">
+                                        <span pButtonIcon class="pi pi-chevron-right"></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7">
+                                <div class="flex flex-col items-center justify-center py-8 text-muted-color">
+                                    <i class="pi pi-inbox text-2xl mb-3"></i>
+                                    <span>No messages found.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </div>
         </div>
     </div>

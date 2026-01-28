@@ -4,12 +4,10 @@ import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { Router, RouterModule } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { Attachment } from '@/pages/messages/models/attachment';
@@ -19,13 +17,12 @@ import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-o
 @Component({
     selector: 'app-drafts',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay, FileDownloadsOverlay],
+    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay, FileDownloadsOverlay],
     templateUrl: './drafts.html',
     styleUrl: './drafts.scss'
 })
 export class Drafts {
     private mailService = inject(MailService);
-    loadingService = inject(LoadingService);
     router = inject(Router);
     messages$ = this.mailService.getDrafts();
     searchTerm = signal('');

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -38,6 +38,14 @@ export class GlobalSearchComponent {
 
     searchTerm = signal<string>('');
     normalizedTerm = computed(() => this.searchTerm().trim().toLowerCase());
+    expanded = signal<boolean>(false);
+
+    private blurTimer: ReturnType<typeof setTimeout> | null = null;
+    private idleTimer: ReturnType<typeof setTimeout> | null = null;
+    private collapseTimer: ReturnType<typeof setTimeout> | null = null;
+
+    private readonly idleTimeoutMs = 10000;
+    private readonly blurCollapseDelayMs = 500;
 
     private menuItems = computed(() => this.menuModel.getMenuItems());
     private inboxMessages = this.mailService.getInbox();
@@ -112,18 +120,59 @@ export class GlobalSearchComponent {
         } else {
             this.searchTerm.set('');
         }
+        this.resetIdleTimer();
     }
 
     navigateTo(result: SearchResult) {
         this.router.navigate(result.route);
         this.searchTerm.set('');
+        this.expanded.set(false);
+        this.clearIdleTimer();
+        this.clearCollapseTimer();
     }
 
     constructor() {
         this.globalHotkeys.ctrlF$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
             this.searchTerm.set('');
-            this.focusSearchInput();
+            this.toggleSearch();
         });
+    }
+
+    toggleSearch() {
+        if (this.expanded()) {
+            this.collapseSearch();
+        } else {
+            this.openSearch();
+        }
+    }
+
+    openSearch() {
+        this.expanded.set(true);
+        this.resetIdleTimer();
+        queueMicrotask(() => this.focusSearchInput());
+    }
+
+    handleFocus() {
+        this.clearBlurTimer();
+        this.expanded.set(true);
+        this.resetIdleTimer();
+    }
+
+    handleBlur() {
+        this.clearBlurTimer();
+        this.clearIdleTimer();
+        this.scheduleCollapse(this.blurCollapseDelayMs);
+    }
+
+    onCleared() {
+        this.searchTerm.set('');
+        this.resetIdleTimer();
+    }
+
+    collapseSearch() {
+        this.expanded.set(false);
+        this.clearIdleTimer();
+        this.clearCollapseTimer();
     }
 
     private focusSearchInput() {
@@ -132,6 +181,44 @@ export class GlobalSearchComponent {
             inputEl.focus();
             inputEl.select();
         }
+    }
+
+    private clearBlurTimer() {
+        if (this.blurTimer) {
+            clearTimeout(this.blurTimer);
+            this.blurTimer = null;
+        }
+    }
+
+    private clearIdleTimer() {
+        if (this.idleTimer) {
+            clearTimeout(this.idleTimer);
+            this.idleTimer = null;
+        }
+    }
+
+    private clearCollapseTimer() {
+        if (this.collapseTimer) {
+            clearTimeout(this.collapseTimer);
+            this.collapseTimer = null;
+        }
+    }
+
+    private resetIdleTimer() {
+        this.clearIdleTimer();
+        if (!this.expanded()) {
+            return;
+        }
+        this.idleTimer = setTimeout(() => {
+            this.expanded.set(false);
+        }, this.idleTimeoutMs);
+    }
+
+    private scheduleCollapse(delay: number) {
+        this.clearCollapseTimer();
+        this.collapseTimer = setTimeout(() => {
+            this.expanded.set(false);
+        }, delay);
     }
 
     private flattenMenu(menu: MenuItem[], parentLabel?: string): Array<{ label: string; route: any[]; parentLabel?: string }> {

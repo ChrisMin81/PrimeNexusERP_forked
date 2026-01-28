@@ -7,7 +7,8 @@
                     <div class="text-sm text-muted-color" aria-live="polite">
                         <span class="mr-3"><strong>From:</strong> {{ message()?.sender }}</span>
                         <span class="mr-3"><strong>To:</strong> {{ message()?.recipients?.join(', ') }}</span>
-                        <span><strong>{{ timestampLabel() }}:</strong> {{ message()?.timestamp | date: 'MMM d, y, h:mm a' }}</span>
+                        <span><strong>{{ timestampLabel() }}
+                            :</strong> {{ message()?.timestamp | date: 'MMM d, y, h:mm a' }}</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -21,7 +22,8 @@
 
             @if (message() && message()!.attachments.length) {
                 <div class="grid grid-cols-3 gap-4 mt-4">
-                   <app-file-list class="col-start-3" [header]="'Attachments'" [files]="message()!.attachments"></app-file-list>
+                    <app-file-list class="col-start-3" [header]="'Attachments'"
+                                   [files]="message()!.attachments"></app-file-list>
                 </div>
             }
 

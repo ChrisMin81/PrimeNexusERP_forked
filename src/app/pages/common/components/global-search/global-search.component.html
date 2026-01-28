@@ -1,20 +1,56 @@
-<div class="relative w-full" aria-label="Global search">
-    <app-float-label-input
-        #searchInput
-        class="w-full"
-        [styleClass]="'w-full'"
-        id="global-search-input"
-        [value]="searchTerm()"
-        label="Global Search"
-        aria-label="Global search"
-        autocomplete="on"
-        (valueChange)="onSearchChange($event)"
-        [clearable]="true"
-    />
+<div class="relative flex w-full items-center justify-end border-0" aria-label="Global search">
+    <button
+        type="button"
+        class="absolute right-0 top-1/2 z-[1100] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-[var(--text-color)] transition-colors duration-200 hover:bg-[var(--surface-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-color)] focus-visible:ring-offset-2"
+        [attr.aria-label]="expanded() ? 'Globale Suche schließen' : 'Globale Suche öffnen'"
+        [attr.aria-pressed]="expanded()"
+        (click)="toggleSearch()"
+    >
+        <i class="pi pi-search" aria-hidden="true"></i>
+    </button>
 
-    @if (hasQuery()) {
+    <div
+        class="relative w-full overflow-hidden pr-12 transition-all duration-300 ease-out"
+        [class.max-w-full]="expanded()"
+        [class.w-full]="expanded()"
+        [class.w-0]="!expanded()"
+        [class.opacity-100]="expanded()"
+        [class.opacity-0]="!expanded()"
+        [class.pointer-events-auto]="expanded()"
+        [class.pointer-events-none]="!expanded()"
+    >
         <div
-            class="bg-white absolute left-0 z-[1000] mt-2 w-full max-w-[calc(100vw-2rem)] sm:max-w-[38rem] max-h-[70vh] overflow-y-auto rounded-xl border border-[var(--p-content-border-color)] opacity-100 shadow-[var(--p-content-shadow)]"
+            class="flex items-center gap-2 bg-[var(--p-surface-0)] px-3 py-1.5 shadow-sm transition-all duration-300 ease-out "
+        >
+            <button
+                type="button"
+                class="flex h-8 w-8 items-center justify-center rounded-full text-[var(--p-surface-700)] transition-colors duration-200 hover:bg-[var(--surface-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-color)] focus-visible:ring-offset-2"
+                aria-label="Suche schließen"
+                (click)="collapseSearch()"
+            >
+                <i class="pi pi-search" aria-hidden="true"></i>
+            </button>
+            <app-float-label-input
+                #searchInput
+                class="w-full"
+                [styleClass]="'w-full'"
+                id="global-search-input"
+                [value]="searchTerm()"
+                label="Global Search"
+                aria-label="Global search"
+                autocomplete="on"
+                (valueChange)="onSearchChange($event)"
+                [clearable]="true"
+                (onFocus)="handleFocus()"
+                (onBlur)="handleBlur()"
+                (onCleared)="onCleared()"
+            />
+        </div>
+    </div>
+
+    @if (expanded() && hasQuery()) {
+        <div
+            class="bg-white absolute right-0 top-full z-[1000] mt-2 w-full max-w-none max-h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border border-[var(--p-content-border-color)] opacity-100 shadow-[var(--p-content-shadow)]"
             aria-live="polite"
         >
             @if (!hasResults()) {

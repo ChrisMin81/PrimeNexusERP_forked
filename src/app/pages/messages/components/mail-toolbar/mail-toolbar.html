@@ -6,17 +6,15 @@
         </div>
         <div class="flex items-center gap-2">
             @if (showCompose()) {
-            <button pButton type="button" severity="primary" (click)="compose.emit()">
-                <span pButtonIcon class="pi pi-pencil"></span>
-                <span pButtonLabel>Compose</span>
+                <button pButton type="button" severity="primary" (click)="compose.emit()">
+                    <span pButtonIcon class="pi pi-pencil"></span>
+                    <span pButtonLabel>Compose</span>
+                </button>
+            }
+            <button pButton type="button" severity="secondary" [outlined]="true" aria-label="Refresh"
+                    (click)="refresh.emit()">
+                <span pButtonIcon class="pi pi-refresh"></span>
             </button>
-        }
-        <button pButton type="button" severity="secondary" [outlined]="true" aria-label="Refresh" (click)="refresh.emit()">
-            <span pButtonIcon class="pi pi-refresh"></span>
-        </button>
-        @if (loading()) {
-            <p-progressSpinner strokeWidth="4" class="w-2rem h-2rem" aria-label="Loading"></p-progressSpinner>
-        }
         </div>
     </div>
     <div class="flex flex-wrap items-center gap-3">

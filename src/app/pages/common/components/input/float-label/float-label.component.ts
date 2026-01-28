@@ -1,4 +1,4 @@
-import { Component, input, contentChild } from '@angular/core';
+import { Component, contentChild, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { BaseInputComponent } from '../base-input.component';

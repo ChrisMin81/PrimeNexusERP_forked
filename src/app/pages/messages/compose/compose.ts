@@ -7,7 +7,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TagModule } from 'primeng/tag';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { firstValueFrom } from 'rxjs';
 import { LoadingService } from '@/services/loading/loading.service';
 
 @Component({

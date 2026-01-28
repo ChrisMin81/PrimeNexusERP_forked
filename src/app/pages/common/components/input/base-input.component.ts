@@ -29,12 +29,7 @@ import { InputTextModule } from 'primeng/inputtext';
             />
 
             @if (clearable() && !!value()) {
-                <button
-                    type="button"
-                    class="clear-button"
-                    (click)="clearValue()"
-                    [attr.aria-label]="clearAriaLabel()"
-                >
+                <button type="button" class="clear-button" (click)="clearValue()" [attr.aria-label]="clearAriaLabel()">
                     <span class="pi pi-times" aria-hidden="true"></span>
                 </button>
             }
@@ -66,7 +61,9 @@ import { InputTextModule } from 'primeng/inputtext';
                 justify-content: center;
                 color: var(--p-surface-500);
                 cursor: pointer;
-                transition: color 0.15s ease, background-color 0.15s ease;
+                transition:
+                    color 0.15s ease,
+                    background-color 0.15s ease;
             }
 
             .clear-button:hover,
@@ -82,7 +79,7 @@ import { InputTextModule } from 'primeng/inputtext';
         `
     ],
     host: {
-        'aria-label': 'ariaLabel() ?? null',
+        'aria-label': 'ariaLabel() ?? null'
     }
 })
 export class BaseInputComponent {

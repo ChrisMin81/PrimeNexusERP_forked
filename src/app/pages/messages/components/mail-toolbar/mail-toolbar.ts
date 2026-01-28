@@ -8,7 +8,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
     selector: 'app-mail-toolbar',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, BadgeModule, ButtonModule, SearchInput, ProgressSpinnerModule],
+    imports: [CommonModule, BadgeModule, ButtonModule, SearchInput],
     templateUrl: './mail-toolbar.html',
     styleUrl: './mail-toolbar.scss'
 })
@@ -17,9 +17,8 @@ export class MailToolbar {
     subtitle = input<string | null>(null);
     count = input<number>(0);
     searchLabel = input<string>('Search');
-    loading = input<boolean>(false);
     showCompose = input<boolean>(true);
-    autocomplete   = input<'off' | 'on'>('off');
+    autocomplete = input<'off' | 'on'>('off');
 
     refresh = output<void>();
     compose = output<void>();

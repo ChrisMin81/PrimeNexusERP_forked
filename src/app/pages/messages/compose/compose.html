@@ -7,7 +7,8 @@
                     <p class="text-muted-color text-sm m-0">Send a new message</p>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a pButton label="Back to Inbox" severity="secondary" [outlined]="true" routerLink="/pages/messages/inbox"></a>
+                    <a pButton label="Back to Inbox" severity="secondary" [outlined]="true"
+                       routerLink="/pages/messages/inbox"></a>
                 </div>
             </div>
 
@@ -19,24 +20,26 @@
                             id="recipients"
                             pInputText
                             type="text"
-                        [value]="recipientInput()"
-                        (input)="onRecipientInput($event)"
-                        (keydown.enter)="addRecipient($event)"
-                        (blur)="addRecipient($event)"
-                        placeholder="Add recipient and press Enter"
-                        aria-describedby="recipients-help"
-                        tabindex="1"
-                        aria-label="Recipients"
-                        class="flex-1 min-w-60"
-                    />
-                    <button pButton type="button" label="Add" (click)="addRecipient()"></button>
-                </div>
-                <small id="recipients-help" class="text-muted-color">Press Enter to add; duplicates are ignored.</small>
+                            [value]="recipientInput()"
+                            (input)="onRecipientInput($event)"
+                            (keydown.enter)="addRecipient($event)"
+                            (blur)="addRecipient($event)"
+                            placeholder="Add recipient and press Enter"
+                            aria-describedby="recipients-help"
+                            tabindex="1"
+                            aria-label="Recipients"
+                            class="flex-1 min-w-60"
+                        />
+                        <button pButton type="button" label="Add" (click)="addRecipient()"></button>
+                    </div>
+                    <small id="recipients-help" class="text-muted-color">Press Enter to add; duplicates are
+                        ignored.</small>
 
-                @if (form.controls.recipients.value.length) {
-                    <div class="flex flex-wrap gap-2 mt-2">
+                    @if (form.controls.recipients.value.length) {
+                        <div class="flex flex-wrap gap-2 mt-2">
                             @for (recipient of form.controls.recipients.value; track recipient) {
-                                <span class="inline-flex items-center gap-2 rounded-full bg-surface-100 dark:bg-surface-800 text-sm px-3 py-1">
+                                <span
+                                    class="inline-flex items-center gap-2 rounded-full bg-surface-100 dark:bg-surface-800 text-sm px-3 py-1">
                                     <span>{{ recipient }}</span>
                                     <button
                                         type="button"
@@ -87,8 +90,10 @@
                 }
 
                 <div class="flex items-center gap-3">
-                    <button pButton type="submit" label="Send" [disabled]="!canSubmit()" [loading]="loadingService.loading()" tabindex="4"></button>
-                    <a pButton label="Cancel" severity="secondary" [outlined]="true" routerLink="/pages/messages/sent" tabindex="5"></a>
+                    <button pButton type="submit" label="Send" [disabled]="!canSubmit()"
+                            [loading]="loadingService.loading()" tabindex="4"></button>
+                    <a pButton label="Cancel" severity="secondary" [outlined]="true" routerLink="/pages/messages/sent"
+                       tabindex="5"></a>
                 </div>
             </form>
         </div>

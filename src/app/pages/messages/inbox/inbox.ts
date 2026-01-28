@@ -9,7 +9,6 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { Router, RouterModule } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { LoadingService } from '@/services/loading/loading.service';
 import { Message } from '@/pages/messages/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { Attachment } from '@/pages/messages/models/attachment';
@@ -19,7 +18,7 @@ import { LoggerService } from '@/services/logger/logger';
 
 @Component({
     selector: 'app-inbox',
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, ProgressSpinnerModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
+    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './inbox.html',
     styleUrl: './inbox.scss'
@@ -28,7 +27,6 @@ export class Inbox {
     private logger = inject(LoggerService);
     private mailService = inject(MailService);
     router = inject(Router);
-    loadingService = inject(LoadingService);
     deletingId = signal<number | null>(null);
     messages$ = this.mailService.getInbox();
     searchTerm = signal('');
@@ -91,7 +89,10 @@ export class Inbox {
 
     openAttachments(event: Event, message: Message) {
         event.stopPropagation();
-        this.logger.debug(`Opening attachments for message ${message.id}`, message.attachments.map((a) => a.name));
+        this.logger.debug(
+            `Opening attachments for message ${message.id}`,
+            message.attachments.map((a) => a.name)
+        );
         this.attachmentList.set([...message.attachments]);
         this.attachmentsDialogOpen.set(true);
     }

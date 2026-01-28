@@ -1,5 +1,5 @@
 export interface AuthResult {
     idToken: string;
-    expiresIn: number
-    error?: string
+    expiresIn: number;
+    error?: string;
 }

@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { fromEvent, filter, map, share, tap } from 'rxjs';
+import { filter, fromEvent, map, share, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GlobalHotkeyService {
