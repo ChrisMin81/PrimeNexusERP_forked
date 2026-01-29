@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Mailbox, MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 import { FileList } from '@/pages/common/components/file-downloads-overlay/file-list/file-list';
 import { validate as isValidUUID } from 'uuid';
 import { LoggerService } from '@/services/logger/logger';

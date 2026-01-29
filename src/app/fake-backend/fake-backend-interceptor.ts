@@ -2,7 +2,7 @@ import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/ht
 import { defer, delay, of, throwError } from 'rxjs';
 import { AuthResult } from '@/pages/auth/model/authResult';
 import { AuthRequest } from '@/pages/auth/model/authRequest';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { backendFakeData } from '@/fake-backend/backend-fake-data';
 

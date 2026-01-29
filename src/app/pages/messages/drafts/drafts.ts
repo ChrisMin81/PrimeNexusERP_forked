@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
-import { MessageAttachment } from '@/api/models/message-attachment';
+import { MessageAttachment } from 'api';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 import { MessageTableComponent } from '@/pages/messages/components/message-table/message-table.component';
 import { filterMessagesByTerm } from '@/pages/messages/utils/message-filter';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 
 @Component({
     selector: 'app-drafts',

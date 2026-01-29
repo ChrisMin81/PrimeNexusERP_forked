@@ -21,6 +21,14 @@
         "paths": {
             "@/*": [
                 "src/app/*"
+            ],
+            "api": [
+                "projects/api/src/public-api.ts",
+                "dist/api"
+            ],
+            "api/*": [
+                "projects/api/src/lib/*",
+                "dist/api/*"
             ]
         }
     },
@@ -29,5 +37,13 @@
         "strictInjectionParameters": true,
         "strictInputAccessModifiers": true,
         "strictTemplates": true
-    }
+    },
+    "references": [
+      {
+        "path": "./projects/api/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/api/tsconfig.spec.json"
+      }
+    ]
 }

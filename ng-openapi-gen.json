@@ -1,7 +1,7 @@
 {
     "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
     "input": "src/assets/openapi.yaml",
-    "output": "src/app/api",
+    "output": "projects/api/src/lib",
     "ignoreUnusedModels": false,
     "serviceSuffix": "Service",
     "enumStyle": "upper"

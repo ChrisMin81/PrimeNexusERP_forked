@@ -4,8 +4,7 @@ import { catchError, finalize, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
 import { LoadingService } from '@/services/loading/loading.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Message } from '@/api/models/message';
-import { MessageAttachment } from '@/api/models/message-attachment';
+import { Message, MessageAttachment } from 'api';
 
 @Injectable({ providedIn: 'root' })
 export class MailService {

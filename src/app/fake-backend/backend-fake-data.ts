@@ -1,4 +1,4 @@
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 
 export const backendFakeData: {
     inboxMessages: Message[];

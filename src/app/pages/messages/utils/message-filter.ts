@@ -1,4 +1,4 @@
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 
 export function filterMessagesByTerm(messages: Message[] | undefined | null, term: string, fields: Array<keyof Message | 'body'>): Message[] {
     if (!messages) {

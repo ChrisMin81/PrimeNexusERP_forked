@@ -4,7 +4,7 @@ import { TableModule } from 'primeng/table';
 import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 
 export type MessageTableContext = 'inbox' | 'sent' | 'drafts';
 

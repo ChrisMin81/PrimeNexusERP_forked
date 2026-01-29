@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
     "test": "ng test",
     "update": "npm update",
-    "generate:api": "ng-openapi-gen"
+    "generate:api": "ng-openapi-gen && ng build api"
   },
   "private": true,
   "dependencies": {
@@ -31,10 +31,11 @@
     "rxjs": "~7.8.2",
     "tailwindcss-primeui": "^0.6.1",
     "tslib": "^2.8.1",
-    "uuid":"^13.0.0"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.1.2",
+    "@angular/build": "^21.1.2",
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.2",
     "@types/jasmine": "~5.1.0",

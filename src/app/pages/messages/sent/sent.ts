@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
-import { MessageAttachment } from '@/api/models/message-attachment';
+import { MessageAttachment } from 'api';
 import { MessageTableComponent } from '@/pages/messages/components/message-table/message-table.component';
 import { filterMessagesByTerm } from '@/pages/messages/utils/message-filter';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 
 @Component({
     selector: 'app-sent',

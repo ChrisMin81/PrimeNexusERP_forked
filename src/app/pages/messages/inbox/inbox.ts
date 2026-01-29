@@ -7,8 +7,7 @@ import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-o
 import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
 import { LoggerService } from '@/services/logger/logger';
 import { MessageTableComponent } from '@/pages/messages/components/message-table/message-table.component';
-import { Message } from '@/api/models/message';
-import { MessageAttachment } from '@/api/models/message-attachment';
+import { Message, MessageAttachment } from 'api';
 import { filterMessagesByTerm } from '@/pages/messages/utils/message-filter';
 
 @Component({

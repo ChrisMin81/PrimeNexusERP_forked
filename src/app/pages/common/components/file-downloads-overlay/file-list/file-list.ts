@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { MessageAttachment } from '@/api/models/message-attachment';
+import { MessageAttachment } from 'api';
 
 @Component({
     selector: 'app-file-list',

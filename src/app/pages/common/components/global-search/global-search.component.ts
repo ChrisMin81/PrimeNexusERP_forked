@@ -5,7 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { MenuModelService } from '@/layout/service/menu-model.service';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/api/models/message';
+import { Message } from 'api';
 import { FloatLabelInput } from '@/pages/common/components/input/float-label-input/float-label-input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GlobalHotkeyService } from '@/pages/common/services/global-hotkey.service';
