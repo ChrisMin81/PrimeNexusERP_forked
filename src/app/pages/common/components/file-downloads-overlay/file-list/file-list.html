@@ -3,14 +3,14 @@
     @if (!files().length) {
         <span class="text-muted-color text-sm">No {{ header() }}.</span>
     } @else {
-        @for (file of files(); track file.id) {
+        @for (file of files(); track file.auditUuid) {
             <a
                 class="flex items-center gap-2 text-primary underline underline-offset-2"
-                [href]="'data:application/octet-stream,' + (file.name || '')"
-                [attr.download]="file.name"
+                [href]="'data:application/octet-stream,' + (file.baseName || '')"
+                [attr.download]="file.baseName"
             >
                 <i class="pi pi-paperclip"></i>
-                <span>{{ file.name }}</span>
+                <span>{{ file.baseName }}</span>
             </a>
         }
     }

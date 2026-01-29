@@ -19,7 +19,7 @@ export class Dashboard {
     private drafts = this.mailService.getDrafts();
 
     inboxCount = computed(() => this.inbox()?.length ?? 0);
-    unreadCount = computed(() => this.inbox()?.filter((m) => !m.isRead).length ?? 0);
+    unreadCount = computed(() => this.inbox()?.filter((m) => !m.readDate).length ?? 0);
     sentCount = computed(() => this.sent()?.length ?? 0);
     draftsCount = computed(() => this.drafts()?.length ?? 0);
 

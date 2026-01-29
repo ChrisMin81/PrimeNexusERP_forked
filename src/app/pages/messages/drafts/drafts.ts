@@ -8,9 +8,9 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { Router, RouterModule } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/pages/messages/models/message';
+import { Message } from '@/api/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
-import { Attachment } from '@/pages/messages/models/attachment';
+import { MessageAttachment } from '@/api/models/message-attachment';
 import { DialogModule } from 'primeng/dialog';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 
@@ -27,7 +27,7 @@ export class Drafts {
     messages$ = this.mailService.getDrafts();
     searchTerm = signal('');
     filteredMessages = signal<Message[]>([]);
-    attachmentList = signal<Attachment[]>([]);
+    attachmentList = signal<MessageAttachment[]>([]);
     attachmentsDialogOpen = signal(false);
 
     constructor() {
@@ -44,7 +44,7 @@ export class Drafts {
             }
             this.filteredMessages.set(
                 messages.filter((message) => {
-                    const haystack = `${message.subject} ${message.recipients.join(' ')} ${message.content}`.toLowerCase();
+                    const haystack = `${message.subject} ${message.recipientName} ${message.body}`.toLowerCase();
                     return haystack.includes(term);
                 })
             );
@@ -60,12 +60,12 @@ export class Drafts {
     }
 
     openMessage(message: Message) {
-        this.router.navigate(['/pages/messages/drafts', message.id]);
+        this.router.navigate(['/pages/messages/drafts', message.auditUuid]);
     }
 
     openAttachments(event: Event, message: Message) {
         event.stopPropagation();
-        this.attachmentList.set(message.attachments);
+        this.attachmentList.set(message.attachments ?? []);
         this.attachmentsDialogOpen.set(true);
     }
 

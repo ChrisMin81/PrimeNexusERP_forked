@@ -1,11 +1,11 @@
 import { inject, Injectable, Injector, Signal, signal, WritableSignal } from '@angular/core';
-import { Message } from '@/pages/messages/models/message';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
-import { Attachment } from '@/pages/messages/models/attachment';
 import { LoadingService } from '@/services/loading/loading.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Message } from '@/api/models/message';
+import { MessageAttachment } from '@/api/models/message-attachment';
 
 @Injectable({ providedIn: 'root' })
 export class MailService {
@@ -47,9 +47,9 @@ export class MailService {
                     this.sentSignal.set([message, ...current]);
                     this.sentLoaded = true;
                     this.logger.trace('Sent message created:', message);
-                    if (payload.draftId) {
+                    if (payload.auditUuid) {
                         const drafts = this.draftsSignal() ?? [];
-                        this.draftsSignal.set(drafts.filter((draft) => draft.id !== payload.draftId));
+                        this.draftsSignal.set(drafts.filter((draft) => draft.auditUuid !== payload.auditUuid));
                     }
                 })
             ),
@@ -57,15 +57,15 @@ export class MailService {
         );
     }
 
-    deleteInboxMessage(idToDelete: WritableSignal<number | null>) {
+    deleteInboxMessage(idToDelete: WritableSignal<string | null>) {
         return this.deleteMessage('inbox', idToDelete);
     }
 
-    deleteSentMessage(id: WritableSignal<number | null>) {
+    deleteSentMessage(id: WritableSignal<string | null>) {
         return this.deleteMessage('sent', id);
     }
 
-    deleteMessage(box: Mailbox, idToDelete: WritableSignal<number | null>) {
+    deleteMessage(box: Mailbox, idToDelete: WritableSignal<string | null>) {
         const id = idToDelete();
         return toSignal(
             this.loadingService.showLoaderUntilCompleted(this.http.delete<void>(`/api/messages/${box}/${id}`)).pipe(
@@ -77,7 +77,7 @@ export class MailService {
                 tap(() => {
                     const mailBox = this.getMessages(box);
                     const current = mailBox() ?? [];
-                    mailBox.set(current.filter((message) => message.id !== id));
+                    mailBox.set(current.filter((message) => message.auditUuid !== id));
                     this.logger.trace(`Deleted ${box} message: ${id}`);
                 }),
                 finalize(() => idToDelete.set(null))
@@ -178,17 +178,17 @@ export class MailService {
             });
     }
 
-    markInboxAsRead(id: number) {
+    markInboxAsRead(id: string) {
         const current = this.inboxSignal();
         if (!current) {
             return;
         }
-        this.inboxSignal.set(current.map((message) => (message.id === id ? { ...message, isRead: true } : message)));
+        this.inboxSignal.set(current.map((message) => (message.auditUuid === id ? { ...message, isRead: true } : message)));
     }
 
-    getMessage(box: Mailbox, id: number): Message | undefined {
+    getMessage(box: Mailbox, id: string): Message | undefined {
         const source = this.pickMailbox(box)();
-        return source?.find((message) => message.id === id);
+        return source?.find((message) => message.auditUuid === id);
     }
 
     private pickMailbox(box: Mailbox) {
@@ -210,8 +210,8 @@ export interface SendMailPayload {
     subject: string;
     content: string;
     recipients: string[];
-    attachments?: Attachment[];
-    draftId?: number;
+    attachments?: MessageAttachment[];
+    auditUuid: string;
 }
 
 export type Mailbox = 'inbox' | 'sent' | 'drafts';

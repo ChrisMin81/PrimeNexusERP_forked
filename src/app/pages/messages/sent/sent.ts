@@ -4,14 +4,13 @@ import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { Router, RouterModule } from '@angular/router';
-import { Message } from '@/pages/messages/models/message';
+import { Message } from '@/api/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
-import { Attachment } from '@/pages/messages/models/attachment';
+import { MessageAttachment } from '@/api/models/message-attachment';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
 
@@ -25,11 +24,11 @@ import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-
 export class Sent {
     private mailService = inject(MailService);
     router = inject(Router);
-    deletingId = signal<number | null>(null);
+    deletingId = signal<string | null>(null);
     messages$ = this.mailService.getSent();
     searchTerm = signal('');
     filteredMessages = signal<Message[]>([]);
-    attachmentList = signal<Attachment[]>([]);
+    attachmentList = signal<MessageAttachment[]>([]);
     attachmentsDialogOpen = signal(false);
     confirmDialogVisible = signal(false);
     messagePendingDeletion = signal<Message | null>(null);
@@ -55,7 +54,7 @@ export class Sent {
             }
             this.filteredMessages.set(
                 messages.filter((message) => {
-                    const haystack = `${message.subject} ${message.sender} ${message.recipients.join(' ')} ${message.content}`.toLowerCase();
+                    const haystack = `${message.subject} ${message.senderAddress} ${message.senderName} ${message.recipientName} ${message.body}`.toLowerCase();
                     return haystack.includes(term);
                 })
             );
@@ -71,12 +70,12 @@ export class Sent {
     }
 
     openMessage(message: Message) {
-        this.router.navigate(['/pages/messages/sent', message.id]);
+        this.router.navigate(['/pages/messages/sent', message.auditUuid]);
     }
 
     openAttachments(event: Event, message: Message) {
         event.stopPropagation();
-        this.attachmentList.set(message.attachments);
+        this.attachmentList.set(message.attachments ?? []);
         this.attachmentsDialogOpen.set(true);
     }
 
@@ -98,7 +97,7 @@ export class Sent {
             this.confirmDialogVisible.set(false);
             return;
         }
-        this.deletingId.set(pending.id);
+        this.deletingId.set(pending.auditUuid ?? null);
         this.confirmDialogVisible.set(false);
         this.messagePendingDeletion.set(null);
         this.mailService.deleteSentMessage(this.deletingId);

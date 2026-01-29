@@ -27,7 +27,7 @@
                         <tr class="cursor-pointer" (click)="openMessage(message)">
                             <td>
                                 <div
-                                    class="font-medium text-surface-900 dark:text-surface-0">{{ message.recipients.join(', ') }}
+                                    class="font-medium text-surface-900 dark:text-surface-0">{{ message.recipientName }}
                                 </div>
                             </td>
                             <td>
@@ -37,7 +37,7 @@
                             </td>
                             <td class="hidden lg:table-cell">
                                     <span
-                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.content }}</span>
+                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.body }}</span>
                             </td>
                             <td class="text-center">
                                 @if (message.attachments.length) {
@@ -61,7 +61,7 @@
                                         [text]="true"
                                         aria-label="Edit"
                                         [routerLink]="['/pages/messages/compose']"
-                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.content, draftId: message.id }"
+                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.body, draftId: message.auditUuid }"
                                         (click)="$event.stopPropagation()"
                                     >
                                         <span pButtonIcon class="pi pi-pencil"></span>
@@ -72,7 +72,7 @@
                                         [text]="true"
                                         aria-label="Send"
                                         [routerLink]="['/pages/messages/compose']"
-                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.content, draftId: message.id }"
+                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.body, draftId: message.auditUuid }"
                                         (click)="$event.stopPropagation()"
                                     >
                                         <span pButtonIcon class="pi pi-send"></span>

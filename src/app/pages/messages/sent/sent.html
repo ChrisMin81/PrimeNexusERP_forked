@@ -39,9 +39,9 @@
                             </td>
                             <td>
                                 <div
-                                    class="font-medium text-surface-900 dark:text-surface-0">{{ message.recipients.join(', ') }}
+                                    class="font-medium text-surface-900 dark:text-surface-0">{{ message.recipientName }}
                                 </div>
-                                <div class="text-sm text-muted-color">{{ message.sender }}</div>
+                                <div class="text-sm text-muted-color">{{ message.senderAddress }}</div>
                             </td>
                             <td>
                                 <div
@@ -53,7 +53,7 @@
                             </td>
                             <td class="hidden lg:table-cell">
                                     <span
-                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.content }}</span>
+                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.body }}</span>
                             </td>
                             <td class="text-center">
                                 @if (message.attachments.length) {
@@ -72,12 +72,12 @@
                             <td class="text-right">
                                 <div class="flex justify-end gap-2">
                                     <button pButton type="button" severity="danger" [text]="true"
-                                            [loading]="deletingId() === message.id" aria-label="Delete"
+                                            [loading]="deletingId() === message.auditUuid" aria-label="Delete"
                                             (click)="requestDelete(message); $event.stopPropagation()">
                                         <span pButtonIcon class="pi pi-trash"></span>
                                     </button>
                                     <a pButton severity="secondary" [text]="true" aria-label="Open"
-                                       [routerLink]="['/pages/messages/sent', message.id]"
+                                       [routerLink]="['/pages/messages/sent', message.auditUuid]"
                                        (click)="$event.stopPropagation()">
                                         <span pButtonIcon class="pi pi-chevron-right"></span>
                                     </a>

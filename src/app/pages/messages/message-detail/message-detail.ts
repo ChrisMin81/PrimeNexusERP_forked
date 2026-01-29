@@ -5,8 +5,10 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Mailbox, MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/pages/messages/models/message';
+import { Message } from '@/api/models/message';
 import { FileList } from '@/pages/common/components/file-downloads-overlay/file-list/file-list';
+import { validate as isValidUUID } from 'uuid';
+import { LoggerService } from '@/services/logger/logger';
 
 @Component({
     selector: 'app-message-detail',
@@ -19,10 +21,11 @@ export class MessageDetail {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private mailService = inject(MailService);
-
+    private logger = inject(LoggerService);
     private paramMap = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
     private boxData = computed(() => (this.route.snapshot.data['box'] as Mailbox) ?? 'inbox');
     private mailboxList = computed<Signal<Message[] | undefined>>(() => {
+        this.logger.error('box: ', this.route.snapshot.paramMap, this.boxData());
         switch (this.boxData()) {
             case 'inbox':
                 return this.mailService.getInbox();
@@ -35,12 +38,16 @@ export class MessageDetail {
 
     message = computed<Message | null>(() => {
         const paramMap = this.paramMap();
-        const id = Number(paramMap.get('id'));
+        const id = paramMap.get('id');
         const list = this.mailboxList()();
-        if (Number.isNaN(id) || !list) {
+            this.logger.debug('MessageDetail', id, list, isValidUUID(id));
+        if (isValidUUID(id) || !list) {
             return null;
         }
-        return list.find((m) => m.id === id) ?? null;
+        return list.find((m) => m.auditUuid === id) ?? null;
+    });
+    messageAttachments = computed(() => {
+        return this.message()?.attachments ?? [];
     });
 
     title = computed(() => {
@@ -55,8 +62,8 @@ export class MessageDetail {
         effect(() => {
             const box = this.boxData();
             const current = this.message();
-            if (box === 'inbox' && current && !current.isRead) {
-                this.mailService.markInboxAsRead(current.id);
+            if (box === 'inbox' && current && !current.readDate && isValidUUID(current.auditUuid)) {
+                this.mailService.markInboxAsRead(current.auditUuid!);
             }
         });
     }
@@ -77,10 +84,10 @@ export class MessageDetail {
         }
         this.router.navigate(['/pages/messages/compose'], {
             queryParams: {
-                recipients: msg.recipients.join(','),
+                recipients: msg.recipientName,
                 subject: msg.subject,
-                content: msg.content,
-                draftId: msg.id
+                content: msg.body,
+                draftId: msg.auditUuid
             }
         });
     }
@@ -90,12 +97,12 @@ export class MessageDetail {
         if (!msg) {
             return;
         }
-        const replySubject = msg.subject.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`;
+        const replySubject = msg.subject?.startsWith('Re:') ? msg.subject : `Re: ${msg.subject}`;
         this.router.navigate(['/pages/messages/compose'], {
             queryParams: {
-                recipients: msg.sender,
+                recipients: msg.senderName,
                 subject: replySubject,
-                content: `\n\n---- Original message ----\nFrom: ${msg.sender}\nTo: ${msg.recipients.join(', ')}\nSent: ${msg.timestamp}\n\n${msg.content}`
+                content: `\n\n---- Original message ----\nFrom: ${msg.senderName} (${msg.senderAddress})\nTo: ${msg.recipientName}\nSent: ${msg.messageDate}\n\n${msg.body}`
             }
         });
     }

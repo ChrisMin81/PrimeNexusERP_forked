@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { File } from '@/pages/common/models/file';
+import { MessageAttachment } from '@/api/models/message-attachment';
 
 @Component({
     selector: 'app-file-list',
@@ -9,5 +9,5 @@ import { File } from '@/pages/common/models/file';
 })
 export class FileList {
     header = input<string>('Attachments:');
-    files = input<Array<File>>([]);
+    files = input<Array<MessageAttachment>>([]);
 }

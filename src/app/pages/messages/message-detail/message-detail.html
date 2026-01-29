@@ -1,3 +1,4 @@
+{{message()|json}}
 <div class="grid grid-cols-12 gap-6">
     <div class="col-span-12 lg:col-start-2 lg:col-span-8">
         <div class="card flex flex-col gap-4">
@@ -5,10 +6,10 @@
                 <div>
                     <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 m-0">{{ title() }}</h2>
                     <div class="text-sm text-muted-color" aria-live="polite">
-                        <span class="mr-3"><strong>From:</strong> {{ message()?.sender }}</span>
-                        <span class="mr-3"><strong>To:</strong> {{ message()?.recipients?.join(', ') }}</span>
+                        <span class="mr-3"><strong>From:</strong> {{ message()?.senderName }}</span>
+                        <span class="mr-3"><strong>To:</strong> {{ message()?.recipientName }}</span>
                         <span><strong>{{ timestampLabel() }}
-                            :</strong> {{ message()?.timestamp | date: 'MMM d, y, h:mm a' }}</span>
+                            :</strong> {{ message()?.messageDate | date: 'MMM d, y, h:mm a' }}</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -17,13 +18,13 @@
             </div>
 
             <div class="text-base text-surface-900 dark:text-surface-0 whitespace-pre-line">
-                {{ message()?.content }}
+                {{ message()?.body }}
             </div>
 
-            @if (message() && message()!.attachments.length) {
+            @if (message() && message()!.attachments?.length) {
                 <div class="grid grid-cols-3 gap-4 mt-4">
                     <app-file-list class="col-start-3" [header]="'Attachments'"
-                                   [files]="message()!.attachments"></app-file-list>
+                                   [files]="messageAttachments()"></app-file-list>
                 </div>
             }
 

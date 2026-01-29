@@ -2,108 +2,100 @@ import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/ht
 import { defer, delay, of, throwError } from 'rxjs';
 import { AuthResult } from '@/pages/auth/model/authResult';
 import { AuthRequest } from '@/pages/auth/model/authRequest';
-import { Message } from '@/pages/messages/models/message';
+import { Message } from '@/api/models/message';
+import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 
 let inboxMessages: Message[] = [
     {
-        id: 1,
+        auditUuid: '1fa06eac-c744-4087-96d1-495e5d8681af',
         subject: 'Welcome to Comino',
-        content: 'Thanks for joining. Here are a few tips to get started with your workspace.',
-        sender: 'Comino Team',
-        recipients: ['you@comino.app'],
-        timestamp: new Date('2026-01-23T08:30:00Z'),
-        attachments: [],
-        isRead: false
+        body: 'Thanks for joining. Here are a few tips to get started with your workspace.',
+        senderName: 'Comino Team',
+        recipientName: 'you@comino.app',
+        messageDate: '2026-01-23T08:30:00Z',
+        attachments: []
     },
     {
-        id: 2,
+        auditUuid: '23cea578-9673-4f0c-826c-a790d944dd52',
         subject: 'Weekly status report',
-        content: 'Your weekly report is ready. Review project health, blockers, and recent activity.',
-        sender: 'Automations',
-        recipients: ['you@comino.app'],
-        timestamp: new Date('2026-01-22T14:12:00Z'),
-        attachments: [{ id: 1, name: 'status-report.pdf', size: 1024, type: 'application/pdf' }],
-        isRead: false
+        body: 'Your weekly report is ready. Review project health, blockers, and recent activity.',
+        senderName: 'Automations',
+        recipientName: 'you@comino.app',
+        messageDate: '2026-01-22T14:12:00Z',
+        attachments: [{ auditUuid: uuidv4(), baseName: 'status-report.pdf', sizeInBytes: 1024, mimeType: 'application/pdf' }]
     },
     {
-        id: 3,
+        auditUuid: '33cea578-9673-4f0c-826c-a790d944dd53',
         subject: 'Design review feedback',
-        content: 'Nice progress on the inbox UX. A few notes on spacing and empty states are attached.',
-        sender: 'Elena Roberts',
-        recipients: ['you@comino.app'],
-        timestamp: new Date('2026-01-21T18:45:00Z'),
-        attachments: [{ id: 2, name: 'feedback.txt', size: 123, type: 'text/plain' }],
-        isRead: true
+        body: 'Nice progress on the inbox UX. A few notes on spacing and empty states are attached.',
+        senderName: 'Elena Roberts',
+        recipientName: 'you@comino.app',
+        messageDate: '2026-01-21T18:45:00Z',
+        attachments: [{ auditUuid: uuidv4(), baseName: 'feedback.txt', sizeInBytes: 123, mimeType: 'text/plain' }]
     },
     {
-        id: 4,
+        auditUuid: '43cea578-9673-4f0c-826c-a890d944dd52',
         subject: 'Client kickoff notes',
-        content: 'Great meeting today. Sharing the summary and next steps for the kickoff.',
-        sender: 'Project Ops',
-        recipients: ['you@comino.app'],
-        timestamp: new Date('2026-01-21T09:05:00Z'),
-        attachments: [],
-        isRead: true
+        body: 'Great meeting today. Sharing the summary and next steps for the kickoff.',
+        senderName: 'Project Ops',
+        recipientName: 'you@comino.app',
+        messageDate: '2026-01-21T09:05:00Z',
+        attachments: []
     }
 ];
 
 let sentMessages: Message[] = [
     {
-        id: 101,
+        auditUuid: uuidv4(),
         subject: 'Re: Design review feedback',
-        content: 'Thanks! I will incorporate the spacing changes and send an updated mock later today.',
-        sender: 'you@comino.app',
-        recipients: ['elena@studio.example'],
-        timestamp: new Date('2026-01-21T19:12:00Z'),
-        attachments: [],
-        isRead: true
+        body: 'Thanks! I will incorporate the spacing changes and send an updated mock later today.',
+        senderAddress: 'you@comino.app',
+        recipientName: 'elena@studio.example',
+        messageDate: '2026-01-21T19:12:00Z',
+        attachments: []
     },
     {
-        id: 102,
+        auditUuid: uuidv4(),
         subject: 'Kickoff follow-up',
-        content: 'Attached are the draft milestones and the proposed delivery timeline for review.',
-        sender: 'you@comino.app',
-        recipients: ['project.ops@example.com', 'lead@example.com'],
-        timestamp: new Date('2026-01-21T10:30:00Z'),
-        attachments: [{ id: 10, name: 'milestones.xlsx', size: 1024, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }],
-        isRead: true
+        body: 'Attached are the draft milestones and the proposed delivery timeline for review.',
+        senderAddress: 'you@comino.app',
+        recipientName: 'project.ops@example.com',
+        messageDate: '2026-01-21T10:30:00Z',
+        attachments: [{ auditUuid: uuidv4(), baseName: 'milestones.xlsx', sizeInBytes: 1024, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }]
     },
     {
-        id: 103,
+        auditUuid: uuidv4(),
         subject: 'Workspace access',
-        content: 'Can you grant access to the new workspace for the onboarding run?',
-        sender: 'you@comino.app',
-        recipients: ['admin@example.com'],
-        timestamp: new Date('2026-01-20T16:05:00Z'),
-        attachments: [],
-        isRead: true
+        body: 'Can you grant access to the new workspace for the onboarding run?',
+        senderAddress: 'you@comino.app',
+        recipientName: 'admin@example.com',
+        messageDate: '2026-01-20T16:05:00Z',
+        attachments: []
     }
 ];
 
 let draftMessages: Message[] = [
     {
-        id: 201,
+        auditUuid: uuidv4(),
         subject: 'Product launch outline',
-        content: 'Drafting the outline for the launch announcement. Add metrics and CTA links.',
-        sender: 'you@comino.app',
-        recipients: ['marketing@example.com'],
-        timestamp: new Date('2026-01-22T12:15:00Z'),
-        attachments: [],
-        isRead: true
+        body: 'Drafting the outline for the launch announcement. Add metrics and CTA links.',
+        senderAddress: 'you@comino.app',
+        recipientName: 'marketing@example.com',
+        messageDate: '2026-01-22T12:15:00Z',
+        attachments: []
     },
     {
-        id: 202,
+        auditUuid: uuidv4(),
         subject: 'Onboarding checklist',
-        content: 'Checklist draft: accounts, environments, permissions, intro calls. Please review.',
-        sender: 'you@comino.app',
-        recipients: ['ops@example.com'],
-        timestamp: new Date('2026-01-21T08:50:00Z'),
-        attachments: [],
-        isRead: true
+        body: 'Checklist draft: accounts, environments, permissions, intro calls. Please review.',
+        senderAddress: 'you@comino.app',
+        recipientName: 'ops@example.com',
+        messageDate: '2026-01-21T08:50:00Z',
+        attachments: []
     }
 ];
 
-const responseDelay = 5000;
+const responseDelay = 1000;
 const respond = <T>(value: HttpResponse<T>) => defer(() => of(value).pipe(delay(responseDelay)));
 const respondError = (err: Error) => defer(() => throwError(() => err).pipe(delay(responseDelay)));
 
@@ -157,21 +149,20 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
     }
 
     if (req.url.endsWith('/api/messages/send')) {
-        const nextId = Math.max(...sentMessages.map((m) => m.id), 100) + 1;
+        const nextId = uuidv4();
         const newMessage: Message = {
-            id: nextId,
+            auditUuid: nextId,
             subject: (req.body as Message).subject,
-            content: (req.body as Message).content,
-            recipients: (req.body as Message).recipients,
-            sender: 'you@comino.app',
-            timestamp: new Date(),
-            attachments: (req.body as Message).attachments ?? [],
-            isRead: true
+            body: (req.body as Message).body,
+            recipientName: (req.body as Message).recipientName,
+            senderAddress: 'you@comino.app',
+            messageDate: new Date().toISOString(),
+            attachments: (req.body as Message).attachments ?? []
         };
         sentMessages = [newMessage, ...sentMessages];
-        const draftId = (req.body as { draftId?: number }).draftId;
+        const draftId = (req.body as { auditUuid?: string }).auditUuid;
         if (draftId) {
-            draftMessages = draftMessages.filter((draft) => draft.id !== draftId);
+            draftMessages = draftMessages.filter((draft) => draft.auditUuid !== draftId);
         }
         return respond(new HttpResponse({ status: 200, body: newMessage }));
     }
@@ -209,20 +200,28 @@ function paginate(req: HttpRequest<unknown>, data: Message[]) {
     return data.slice(offset, offset + limit);
 }
 
+function getAudtiUUID(req: HttpRequest<unknown>) {
+    let candidate = req.url.split('/').pop();
+    if (isValidUUID(candidate)) {
+        return candidate;
+    }
+    return respondError(new Error('Invalid UUID provided'));
+}
+
 const DELETERequestHandler: HttpInterceptorFn = (req, next) => {
     if (req.method !== 'DELETE') {
         return next(req);
     }
 
     if (req.url.includes('/api/messages/inbox/')) {
-        const id = Number(req.url.split('/').pop());
-        inboxMessages = inboxMessages.filter((message) => message.id !== id);
+        const auditUuid = getAudtiUUID(req);
+        inboxMessages = inboxMessages.filter((message) => message.auditUuid !== auditUuid);
         return respond(new HttpResponse({ status: 200 }));
     }
 
     if (req.url.includes('/api/messages/sent/')) {
-        const id = Number(req.url.split('/').pop());
-        sentMessages = sentMessages.filter((message) => message.id !== id);
+        const auditUuid = getAudtiUUID(req);
+        sentMessages = sentMessages.filter((message) => message.auditUuid !== auditUuid);
         return respond(new HttpResponse({ status: 200 }));
     }
 

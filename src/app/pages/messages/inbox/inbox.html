@@ -35,12 +35,12 @@
                             class="cursor-pointer"
                         >
                             <td>
-                                <p-avatar label="{{ message.sender[0] }}" shape="circle" size="large"></p-avatar>
+                                <p-avatar label="{{ message.senderAddress }}" shape="circle" size="large"></p-avatar>
                             </td>
                             <td>
-                                <div class="font-medium text-surface-900 dark:text-surface-0">{{ message.sender }}
+                                <div class="font-medium text-surface-900 dark:text-surface-0">{{ message.senderAddress }}
                                 </div>
-                                <div class="text-sm text-muted-color">{{ message.recipients.join(', ') }}</div>
+                                <div class="text-sm text-muted-color">{{ message.recipientName }}</div>
                             </td>
                             <td>
                                 <div
@@ -52,7 +52,7 @@
                             </td>
                             <td class="hidden lg:table-cell">
                                     <span
-                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.content }}</span>
+                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.body }}</span>
                             </td>
                             <td class="text-center">
                                 @if (message.attachments.length) {
@@ -75,12 +75,12 @@
                                         <span pButtonIcon class="pi pi-reply"></span>
                                     </button>
                                     <button pButton type="button" severity="danger" [text]="true"
-                                            [loading]="deletingId() === message.id" aria-label="Delete"
+                                            [loading]="deletingId() === message.auditUuid" aria-label="Delete"
                                             (click)="requestDelete(message); $event.stopPropagation()">
                                         <span pButtonIcon class="pi pi-trash"></span>
                                     </button>
                                     <a pButton severity="secondary" [text]="true" aria-label="Open"
-                                       [routerLink]="['/pages/messages/inbox', message.id]"
+                                       [routerLink]="['/pages/messages/inbox', message.auditUuid]"
                                        (click)="$event.stopPropagation()">
                                         <span pButtonIcon class="pi pi-chevron-right"></span>
                                     </a>

@@ -21,7 +21,7 @@ export class AppTopbar {
     items!: MenuItem[];
     private mailService = inject(MailService);
     private inboxMessages = this.mailService.getInbox();
-    unreadCount = computed(() => (this.inboxMessages() ?? []).filter((message) => !message.isRead).length);
+    unreadCount = computed(() => (this.inboxMessages() ?? []).filter((message) => !message.readDate).length);
 
     constructor(public layoutService: LayoutService) {}
 

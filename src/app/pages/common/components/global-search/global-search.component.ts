@@ -5,7 +5,7 @@ import { MenuItem } from 'primeng/api';
 import { TagModule } from 'primeng/tag';
 import { MenuModelService } from '@/layout/service/menu-model.service';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/pages/messages/models/message';
+import { Message } from '@/api/models/message';
 import { FloatLabelInput } from '@/pages/common/components/input/float-label-input/float-label-input';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GlobalHotkeyService } from '@/pages/common/services/global-hotkey.service';
@@ -88,10 +88,10 @@ export class GlobalSearchComponent {
                 .slice(0, 5)
                 .forEach((message) =>
                     matches.push({
-                        id: `${box}-${message.id}`,
-                        label: message.subject,
-                        description: `${message.sender} • ${this.formatTimestamp(message.timestamp)}`,
-                        route: ['/pages/messages', box, message.id],
+                        id: `${box}-${message.auditUuid}`,
+                        label: message.subject!,
+                        description: `${message.senderAddress} • ${this.formatTimestamp(message.messageDate)}`,
+                        route: ['/pages/messages', box, message.auditUuid],
                         type: 'message',
                         badge: box
                     })
@@ -243,11 +243,14 @@ export class GlobalSearchComponent {
     }
 
     private messageMatches(message: Message, term: string) {
-        const haystack = `${message.subject} ${message.sender} ${message.recipients.join(' ')} ${message.content}`.toLowerCase();
+        const haystack = `${message.subject} ${message.senderAddress} ${message.recipientName} ${message.body}`.toLowerCase();
         return haystack.includes(term);
     }
 
-    private formatTimestamp(value: Date | string) {
+    private formatTimestamp(value: Date | string | undefined) {
+        if(!value) {
+            return null
+        }
         if (value instanceof Date) {
             return value.toLocaleString();
         }

@@ -8,7 +8,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { TagModule } from 'primeng/tag';
 import { MailService } from '@/pages/messages/services/mail.service';
 import { LoadingService } from '@/services/loading/loading.service';
-
+import { v4 as uuidV4, validate as isValidUUID } from 'uuid';
 @Component({
     selector: 'app-compose',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +35,7 @@ export class Compose {
     hasRecipient = computed(() => this.form.controls.recipients.value.length > 0 || this.recipientInput().trim().length > 0);
     canSubmit = computed(() => this.hasRecipient() && this.form.controls.subject.valid && this.form.controls.content.valid && !this.loadingService.loading());
 
-    private draftId = signal<number | null>(null);
+    private draftId = signal<string>(uuidV4());
 
     constructor() {
         this.prefillFromQuery();
@@ -68,7 +68,7 @@ export class Compose {
             recipients,
             subject,
             content,
-            draftId: this.draftId() ?? undefined
+            auditUuid: this.draftId()
         });
 
         this.router.navigate(['/pages/messages/sent']);
@@ -115,11 +115,8 @@ export class Compose {
             this.form.controls.content.setValue(contentParam);
         }
         const draftIdParam = params.get('draftId');
-        if (draftIdParam) {
-            const parsed = Number(draftIdParam);
-            if (!Number.isNaN(parsed)) {
-                this.draftId.set(parsed);
-            }
+        if (isValidUUID(draftIdParam)) {
+            this.draftId.set(draftIdParam!);
         }
     }
 }
