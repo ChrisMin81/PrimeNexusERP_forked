@@ -4,96 +4,7 @@ import { AuthResult } from '@/pages/auth/model/authResult';
 import { AuthRequest } from '@/pages/auth/model/authRequest';
 import { Message } from '@/api/models/message';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
-
-let inboxMessages: Message[] = [
-    {
-        auditUuid: '1fa06eac-c744-4087-96d1-495e5d8681af',
-        subject: 'Welcome to Comino',
-        body: 'Thanks for joining. Here are a few tips to get started with your workspace.',
-        senderName: 'Comino Team',
-        recipientName: 'you@comino.app',
-        messageDate: '2026-01-23T08:30:00Z',
-        attachments: []
-    },
-    {
-        auditUuid: '23cea578-9673-4f0c-826c-a790d944dd52',
-        subject: 'Weekly status report',
-        body: 'Your weekly report is ready. Review project health, blockers, and recent activity.',
-        senderName: 'Automations',
-        recipientName: 'you@comino.app',
-        messageDate: '2026-01-22T14:12:00Z',
-        attachments: [{ auditUuid: uuidv4(), baseName: 'status-report.pdf', sizeInBytes: 1024, mimeType: 'application/pdf' }]
-    },
-    {
-        auditUuid: '33cea578-9673-4f0c-826c-a790d944dd53',
-        subject: 'Design review feedback',
-        body: 'Nice progress on the inbox UX. A few notes on spacing and empty states are attached.',
-        senderName: 'Elena Roberts',
-        recipientName: 'you@comino.app',
-        messageDate: '2026-01-21T18:45:00Z',
-        attachments: [{ auditUuid: uuidv4(), baseName: 'feedback.txt', sizeInBytes: 123, mimeType: 'text/plain' }]
-    },
-    {
-        auditUuid: '43cea578-9673-4f0c-826c-a890d944dd52',
-        subject: 'Client kickoff notes',
-        body: 'Great meeting today. Sharing the summary and next steps for the kickoff.',
-        senderName: 'Project Ops',
-        recipientName: 'you@comino.app',
-        messageDate: '2026-01-21T09:05:00Z',
-        attachments: []
-    }
-];
-
-let sentMessages: Message[] = [
-    {
-        auditUuid: uuidv4(),
-        subject: 'Re: Design review feedback',
-        body: 'Thanks! I will incorporate the spacing changes and send an updated mock later today.',
-        senderAddress: 'you@comino.app',
-        recipientName: 'elena@studio.example',
-        messageDate: '2026-01-21T19:12:00Z',
-        attachments: []
-    },
-    {
-        auditUuid: uuidv4(),
-        subject: 'Kickoff follow-up',
-        body: 'Attached are the draft milestones and the proposed delivery timeline for review.',
-        senderAddress: 'you@comino.app',
-        recipientName: 'project.ops@example.com',
-        messageDate: '2026-01-21T10:30:00Z',
-        attachments: [{ auditUuid: uuidv4(), baseName: 'milestones.xlsx', sizeInBytes: 1024, mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }]
-    },
-    {
-        auditUuid: uuidv4(),
-        subject: 'Workspace access',
-        body: 'Can you grant access to the new workspace for the onboarding run?',
-        senderAddress: 'you@comino.app',
-        recipientName: 'admin@example.com',
-        messageDate: '2026-01-20T16:05:00Z',
-        attachments: []
-    }
-];
-
-let draftMessages: Message[] = [
-    {
-        auditUuid: uuidv4(),
-        subject: 'Product launch outline',
-        body: 'Drafting the outline for the launch announcement. Add metrics and CTA links.',
-        senderAddress: 'you@comino.app',
-        recipientName: 'marketing@example.com',
-        messageDate: '2026-01-22T12:15:00Z',
-        attachments: []
-    },
-    {
-        auditUuid: uuidv4(),
-        subject: 'Onboarding checklist',
-        body: 'Checklist draft: accounts, environments, permissions, intro calls. Please review.',
-        senderAddress: 'you@comino.app',
-        recipientName: 'ops@example.com',
-        messageDate: '2026-01-21T08:50:00Z',
-        attachments: []
-    }
-];
+import { backendFakeData } from '@/fake-backend/backend-fake-data';
 
 const responseDelay = 1000;
 const respond = <T>(value: HttpResponse<T>) => defer(() => of(value).pipe(delay(responseDelay)));
@@ -159,10 +70,10 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
             messageDate: new Date().toISOString(),
             attachments: (req.body as Message).attachments ?? []
         };
-        sentMessages = [newMessage, ...sentMessages];
+        backendFakeData.sentMessages = [newMessage, ...backendFakeData.sentMessages];
         const draftId = (req.body as { auditUuid?: string }).auditUuid;
         if (draftId) {
-            draftMessages = draftMessages.filter((draft) => draft.auditUuid !== draftId);
+            backendFakeData.draftMessages = backendFakeData.draftMessages.filter((draft) => draft.auditUuid !== draftId);
         }
         return respond(new HttpResponse({ status: 200, body: newMessage }));
     }
@@ -176,15 +87,15 @@ const GETRequestHandler: HttpInterceptorFn = (req, next) => {
     }
 
     if (req.url.includes('/api/messages/inbox')) {
-        return respond(new HttpResponse({ status: 200, body: paginate(req, inboxMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, backendFakeData.inboxMessages) }));
     }
 
     if (req.url.includes('/api/messages/sent')) {
-        return respond(new HttpResponse({ status: 200, body: paginate(req, sentMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, backendFakeData.sentMessages) }));
     }
 
     if (req.url.includes('/api/messages/drafts')) {
-        return respond(new HttpResponse({ status: 200, body: paginate(req, draftMessages) }));
+        return respond(new HttpResponse({ status: 200, body: paginate(req, backendFakeData.draftMessages) }));
     }
 
     if (isAuthRequest(req.body)) {
@@ -215,13 +126,13 @@ const DELETERequestHandler: HttpInterceptorFn = (req, next) => {
 
     if (req.url.includes('/api/messages/inbox/')) {
         const auditUuid = getAudtiUUID(req);
-        inboxMessages = inboxMessages.filter((message) => message.auditUuid !== auditUuid);
+        backendFakeData.inboxMessages = backendFakeData.inboxMessages.filter((message) => message.auditUuid !== auditUuid);
         return respond(new HttpResponse({ status: 200 }));
     }
 
     if (req.url.includes('/api/messages/sent/')) {
         const auditUuid = getAudtiUUID(req);
-        sentMessages = sentMessages.filter((message) => message.auditUuid !== auditUuid);
+        backendFakeData.sentMessages = backendFakeData.sentMessages.filter((message) => message.auditUuid !== auditUuid);
         return respond(new HttpResponse({ status: 200 }));
     }
 

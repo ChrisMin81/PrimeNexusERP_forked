@@ -1,22 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AvatarModule } from 'primeng/avatar';
-import { BadgeModule } from 'primeng/badge';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { Router, RouterModule } from '@angular/router';
-import { Message } from '@/api/models/message';
+import { Router } from '@angular/router';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
-import { MessageAttachment } from '@/api/models/message-attachment';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
 import { ConfirmDialog } from '@/pages/common/components/confirm-dialog/confirm-dialog.component';
+import { MessageAttachment } from '@/api/models/message-attachment';
+import { MessageTableComponent } from '@/pages/messages/components/message-table/message-table.component';
+import { filterMessagesByTerm } from '@/pages/messages/utils/message-filter';
+import { Message } from '@/api/models/message';
 
 @Component({
     selector: 'app-sent',
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, TableModule, TagModule, RouterModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog],
+    imports: [CommonModule, MailToolbar, FileDownloadsOverlay, ConfirmDialog, MessageTableComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './sent.html',
     styleUrl: './sent.scss'
@@ -25,7 +21,7 @@ export class Sent {
     private mailService = inject(MailService);
     router = inject(Router);
     deletingId = signal<string | null>(null);
-    messages$ = this.mailService.getSent();
+    messages$: Signal<Message[] | undefined> = this.mailService.getSent();
     searchTerm = signal('');
     filteredMessages = signal<Message[]>([]);
     attachmentList = signal<MessageAttachment[]>([]);
@@ -43,20 +39,9 @@ export class Sent {
     constructor() {
         effect(() => {
             const messages = this.messages$();
-            const term = this.searchTerm().trim().toLowerCase();
-            if (!messages) {
-                this.filteredMessages.set([]);
-                return;
-            }
-            if (!term) {
-                this.filteredMessages.set(messages);
-                return;
-            }
+            const term = this.searchTerm();
             this.filteredMessages.set(
-                messages.filter((message) => {
-                    const haystack = `${message.subject} ${message.senderAddress} ${message.senderName} ${message.recipientName} ${message.body}`.toLowerCase();
-                    return haystack.includes(term);
-                })
+                filterMessagesByTerm(messages, term, ['subject', 'senderAddress', 'senderName', 'recipientName', 'body'])
             );
         });
     }
@@ -73,8 +58,7 @@ export class Sent {
         this.router.navigate(['/pages/messages/sent', message.auditUuid]);
     }
 
-    openAttachments(event: Event, message: Message) {
-        event.stopPropagation();
+    openAttachments(_event: Event, message: Message) {
         this.attachmentList.set(message.attachments ?? []);
         this.attachmentsDialogOpen.set(true);
     }

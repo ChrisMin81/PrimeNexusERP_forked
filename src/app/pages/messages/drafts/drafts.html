@@ -12,86 +12,17 @@
                     (refresh)="refresh()"
                     (compose)="router.navigate(['/pages/messages/compose'])"
                 />
-                <p-table [value]="messages" dataKey="id" [rowHover]="true" aria-label="Draft messages">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>To</th>
-                            <th>Subject</th>
-                            <th class="hidden lg:table-cell">Preview</th>
-                            <th class="w-8rem text-center">Attachments</th>
-                            <th class="w-10rem">Updated</th>
-                            <th class="w-8rem text-right">Actions</th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-message>
-                        <tr class="cursor-pointer" (click)="openMessage(message)">
-                            <td>
-                                <div
-                                    class="font-medium text-surface-900 dark:text-surface-0">{{ message.recipientName }}
-                                </div>
-                            </td>
-                            <td>
-                                <div
-                                    class="font-semibold text-surface-900 dark:text-surface-0">{{ message.subject || '(No subject)' }}
-                                </div>
-                            </td>
-                            <td class="hidden lg:table-cell">
-                                    <span
-                                        class="text-sm text-muted-color block max-w-64 truncate">{{ message.body }}</span>
-                            </td>
-                            <td class="text-center">
-                                @if (message.attachments.length) {
-                                    <p-tag value="{{ message.attachments.length }}" severity="info"
-                                           icon="pi pi-paperclip"
-                                           (click)="openAttachments($event, message)"></p-tag>
-                                } @else {
-                                    <span class="text-muted-color">-</span>
-                                }
-                            </td>
-                            <td>
-                                <div
-                                    class="text-sm text-muted-color">{{ message.timestamp | date: 'MMM d, y, h:mm a' }}
-                                </div>
-                            </td>
-                            <td class="text-right">
-                                <div class="flex justify-end gap-2">
-                                    <a
-                                        pButton
-                                        severity="primary"
-                                        [text]="true"
-                                        aria-label="Edit"
-                                        [routerLink]="['/pages/messages/compose']"
-                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.body, draftId: message.auditUuid }"
-                                        (click)="$event.stopPropagation()"
-                                    >
-                                        <span pButtonIcon class="pi pi-pencil"></span>
-                                    </a>
-                                    <a
-                                        pButton
-                                        severity="secondary"
-                                        [text]="true"
-                                        aria-label="Send"
-                                        [routerLink]="['/pages/messages/compose']"
-                                        [queryParams]="{ recipients: message.recipients.join(','), subject: message.subject, content: message.body, draftId: message.auditUuid }"
-                                        (click)="$event.stopPropagation()"
-                                    >
-                                        <span pButtonIcon class="pi pi-send"></span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="emptymessage">
-                        <tr>
-                            <td colspan="6">
-                                <div class="flex flex-col items-center justify-center py-8 text-muted-color">
-                                    <i class="pi pi-file text-2xl mb-3"></i>
-                                    <span>No drafts found.</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
+
+                <app-message-table
+                    [messages]="messages"
+                    context="drafts"
+                    emptyIcon="pi pi-file"
+                    emptyLabel="No drafts found."
+                    (open)="openMessage($event)"
+                    (attachments)="openAttachments($event.originalEvent, $event.message)"
+                    (editDraft)="editDraft($event)"
+                    (sendDraft)="sendDraft($event)"
+                />
             </div>
         </div>
     </div>

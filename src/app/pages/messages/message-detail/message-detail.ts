@@ -25,7 +25,6 @@ export class MessageDetail {
     private paramMap = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
     private boxData = computed(() => (this.route.snapshot.data['box'] as Mailbox) ?? 'inbox');
     private mailboxList = computed<Signal<Message[] | undefined>>(() => {
-        this.logger.error('box: ', this.route.snapshot.paramMap, this.boxData());
         switch (this.boxData()) {
             case 'inbox':
                 return this.mailService.getInbox();
@@ -40,8 +39,7 @@ export class MessageDetail {
         const paramMap = this.paramMap();
         const id = paramMap.get('id');
         const list = this.mailboxList()();
-            this.logger.debug('MessageDetail', id, list, isValidUUID(id));
-        if (isValidUUID(id) || !list) {
+        if (!id || !isValidUUID(id) || !list) {
             return null;
         }
         return list.find((m) => m.auditUuid === id) ?? null;

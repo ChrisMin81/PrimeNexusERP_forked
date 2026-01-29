@@ -1,5 +1,4 @@
 import { Injectable, isDevMode } from '@angular/core';
-import { UtilService } from './util.service';
 
 interface LoggingFunction {
     (...args: any[]): void;
@@ -28,7 +27,7 @@ export interface Logger {
  */
 @Injectable({ providedIn: 'root' })
 export class LoggerService implements Logger {
-    constructor(private utilService: UtilService) {}
+    constructor() {}
     trace(...args: any[]): void {
         if (isDevMode()) {
             console.trace.apply(null, args);
@@ -62,7 +61,6 @@ export class LoggerService implements Logger {
         if (isDevMode()) {
             console.log('Error =>>>>');
             console.error.apply(null, args);
-            this.utilService.downloadCSV(args);
         }
     }
 }

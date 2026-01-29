@@ -1,30 +1,25 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Signal, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AvatarModule } from 'primeng/avatar';
-import { BadgeModule } from 'primeng/badge';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { MailService } from '@/pages/messages/services/mail.service';
-import { Message } from '@/api/models/message';
 import { MailToolbar } from '@/pages/messages/components/mail-toolbar/mail-toolbar';
 import { MessageAttachment } from '@/api/models/message-attachment';
-import { DialogModule } from 'primeng/dialog';
 import { FileDownloadsOverlay } from '@/pages/common/components/file-downloads-overlay/file-downloads-overlay.component';
+import { MessageTableComponent } from '@/pages/messages/components/message-table/message-table.component';
+import { filterMessagesByTerm } from '@/pages/messages/utils/message-filter';
+import { Message } from '@/api/models/message';
 
 @Component({
     selector: 'app-drafts',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, AvatarModule, BadgeModule, ButtonModule, InputTextModule, TableModule, TagModule, RouterModule, MailToolbar, DialogModule, FileDownloadsOverlay, FileDownloadsOverlay],
+    imports: [CommonModule, MailToolbar, FileDownloadsOverlay, MessageTableComponent],
     templateUrl: './drafts.html',
     styleUrl: './drafts.scss'
 })
 export class Drafts {
     private mailService = inject(MailService);
     router = inject(Router);
-    messages$ = this.mailService.getDrafts();
+    messages$: Signal<Message[] | undefined> = this.mailService.getDrafts();
     searchTerm = signal('');
     filteredMessages = signal<Message[]>([]);
     attachmentList = signal<MessageAttachment[]>([]);
@@ -33,21 +28,8 @@ export class Drafts {
     constructor() {
         effect(() => {
             const messages = this.messages$();
-            const term = this.searchTerm().trim().toLowerCase();
-            if (!messages) {
-                this.filteredMessages.set([]);
-                return;
-            }
-            if (!term) {
-                this.filteredMessages.set(messages);
-                return;
-            }
-            this.filteredMessages.set(
-                messages.filter((message) => {
-                    const haystack = `${message.subject} ${message.recipientName} ${message.body}`.toLowerCase();
-                    return haystack.includes(term);
-                })
-            );
+            const term = this.searchTerm();
+            this.filteredMessages.set(filterMessagesByTerm(messages, term, ['subject', 'recipientName', 'body']));
         });
     }
 
@@ -63,13 +45,32 @@ export class Drafts {
         this.router.navigate(['/pages/messages/drafts', message.auditUuid]);
     }
 
-    openAttachments(event: Event, message: Message) {
-        event.stopPropagation();
+    openAttachments(_event: Event, message: Message) {
         this.attachmentList.set(message.attachments ?? []);
         this.attachmentsDialogOpen.set(true);
     }
 
     closeAttachments() {
         this.attachmentsDialogOpen.set(false);
+    }
+
+    editDraft(message: Message) {
+        this.navigateToComposer(message);
+    }
+
+    sendDraft(message: Message) {
+        this.navigateToComposer(message);
+    }
+
+    private navigateToComposer(message: Message) {
+        const recipientList = message.recipientName ? [message.recipientName] : [];
+        this.router.navigate(['/pages/messages/compose'], {
+            queryParams: {
+                recipients: recipientList.join(','),
+                subject: message.subject,
+                content: message.body,
+                draftId: message.auditUuid
+            }
+        });
     }
 }

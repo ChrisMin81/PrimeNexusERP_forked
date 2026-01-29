@@ -39,8 +39,11 @@ export class MailService {
     }
 
     sendMail(payload: SendMailPayload): Signal<Message | undefined> {
+        const recipientName = payload.recipientName ?? payload.recipients.join(', ');
+        const { recipients, ...rest } = payload;
+        const apiPayload = { ...rest, recipientName };
         return toSignal(
-            this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', payload)).pipe(
+            this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', apiPayload)).pipe(
                 take(1),
                 tap((message) => {
                     const current = this.sentSignal() ?? [];
@@ -183,7 +186,20 @@ export class MailService {
         if (!current) {
             return;
         }
-        this.inboxSignal.set(current.map((message) => (message.auditUuid === id ? { ...message, isRead: true } : message)));
+        this.inboxSignal.set(
+            current.map((message) => {
+                if (message.auditUuid !== id) {
+                    return message;
+                }
+                if (message.readDate) {
+                    return message;
+                }
+                return {
+                    ...message,
+                    readDate: new Date().toISOString()
+                };
+            })
+        );
     }
 
     getMessage(box: Mailbox, id: string): Message | undefined {
@@ -210,6 +226,7 @@ export interface SendMailPayload {
     subject: string;
     content: string;
     recipients: string[];
+    recipientName?: string;
     attachments?: MessageAttachment[];
     auditUuid: string;
 }
