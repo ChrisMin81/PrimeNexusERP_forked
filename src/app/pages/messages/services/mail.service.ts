@@ -4,7 +4,7 @@ import { catchError, finalize, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/services/logger/logger';
 import { LoadingService } from '@/services/loading/loading.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Message, MessageAttachment } from 'api';
+import { Message, MessageAttachment, MessageSendingRequest } from 'api';
 
 @Injectable({ providedIn: 'root' })
 export class MailService {
@@ -37,10 +37,10 @@ export class MailService {
         return this.draftsSignal.asReadonly();
     }
 
-    sendMail(payload: SendMailPayload): Signal<Message | undefined> {
+    sendMail(payload: MessageSendingRequest & { recipients: string[]; auditUuid?: string }): Signal<Message | undefined> {
         const recipientName = payload.recipientName ?? payload.recipients.join(', ');
-        const { recipients, ...rest } = payload;
-        const apiPayload = { ...rest, recipientName };
+        const { recipients, auditUuid, ...rest } = payload;
+        const apiPayload: MessageSendingRequest = { ...rest, recipientName };
         return toSignal(
             this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', apiPayload)).pipe(
                 take(1),
@@ -49,9 +49,9 @@ export class MailService {
                     this.sentSignal.set([message, ...current]);
                     this.sentLoaded = true;
                     this.logger.trace('Sent message created:', message);
-                    if (payload.auditUuid) {
+                    if (auditUuid) {
                         const drafts = this.draftsSignal() ?? [];
-                        this.draftsSignal.set(drafts.filter((draft) => draft.auditUuid !== payload.auditUuid));
+                        this.draftsSignal.set(drafts.filter((draft) => draft.auditUuid !== auditUuid));
                     }
                 })
             ),
@@ -219,15 +219,6 @@ export class MailService {
                 return this.draftsSignal.asReadonly();
         }
     }
-}
-
-export interface SendMailPayload {
-    subject: string;
-    content: string;
-    recipients: string[];
-    recipientName?: string;
-    attachments?: MessageAttachment[];
-    auditUuid: string;
 }
 
 export type Mailbox = 'inbox' | 'sent' | 'drafts';

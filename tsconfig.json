@@ -41,9 +41,6 @@
     "references": [
       {
         "path": "./projects/api/tsconfig.lib.json"
-      },
-      {
-        "path": "./projects/api/tsconfig.spec.json"
       }
     ]
 }

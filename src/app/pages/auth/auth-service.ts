@@ -19,7 +19,7 @@ export class AuthService {
 
     login(email: string, password: string): Signal<AuthResult | undefined> {
         return toSignal(
-            this.http.post<AuthResult>('http://localhost:9000/api/login', { email, password }).pipe(
+            this.http.post<AuthResult>('http://localhost:9000/api/login', { username: email, password }).pipe(
                 catchError((err) => {
                     this.cleanupStorageEntries();
                     this.router.navigate(['/auth/unauthorized-access']);

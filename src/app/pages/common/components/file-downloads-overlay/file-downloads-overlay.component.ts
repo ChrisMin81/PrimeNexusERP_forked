@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { FileList } from '@/pages/common/components/file-downloads-overlay/file-list/file-list';
+import { FileList } from '@/pages/common/components/file-downloads-overlay/file-list/file-list.component';
 import { MessageAttachment } from 'api';
 
 @Component({
@@ -17,3 +17,4 @@ export class FileDownloadsOverlay {
     header = input('Attachments');
     close = output<void>();
 }
+

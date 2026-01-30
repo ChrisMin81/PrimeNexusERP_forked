@@ -1,8 +1,7 @@
 import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { defer, delay, of, throwError } from 'rxjs';
 import { AuthResult } from '@/pages/auth/model/authResult';
-import { AuthRequest } from '@/pages/auth/model/authRequest';
-import { Message } from 'api';
+import { LoginCredentials, Message } from 'api';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { backendFakeData } from '@/fake-backend/backend-fake-data';
 
@@ -24,8 +23,8 @@ export const fakeBackendInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
 };
 
-function isAuthRequest(pet: unknown): pet is AuthRequest {
-    return <AuthRequest>(<unknown>pet) !== undefined;
+function isAuthRequest(loginCredentials: unknown): loginCredentials is LoginCredentials {
+    return loginCredentials !== undefined;
 }
 
 const PUTRequestHandler: HttpInterceptorFn = (req, next) => {
@@ -43,7 +42,7 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
     if (isAuthRequest(req.body)) {
         switch (req.url) {
             case 'http://localhost:9000/api/login':
-                if (req.body.email === 'christian.minatti@gmail.com' && !!req.body.password) {
+                if (req.body.username === 'christian.minatti@gmail.com' && !!req.body.password) {
                     return respond(new HttpResponse<AuthResult>({ status: 200, body: { idToken: 'ABCDEF', expiresIn: 28800 } })); // 28800 = 8h
                 }
                 return respondError(

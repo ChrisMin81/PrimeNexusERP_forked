@@ -1,4 +1,4 @@
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { AuthService } from '@/pages/auth/auth-service';
 import { inject } from '@angular/core';
 import { LoggerService } from '@/services/logger/logger';
@@ -15,3 +15,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     logger.debug('User is redirected to login page');
     return true;
 };
+
+// Used with canMatch to avoid loading protected routes when unauthenticated.
+export const authMatchGuard: CanMatchFn = () => authGuard({} as any, { url: '' } as any);
