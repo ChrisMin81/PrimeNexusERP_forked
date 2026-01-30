@@ -5,9 +5,9 @@ import { StyleClassModule } from 'primeng/styleclass';
 import { MenuItem } from 'primeng/api';
 import { layoutConfig, LayoutService } from '@/layout/service/layout.service';
 import { BadgeModule } from 'primeng/badge';
-import { MailService } from '@/pages/messages/services/mail.service';
+import { MailService } from '@/features/messages/services/mail.service';
 import { AppConfigurator } from '@/layout/component/app-configurator/app-configurator.component';
-import { GlobalSearchComponent } from '@/pages/common/components/global-search/global-search.component';
+import { GlobalSearchComponent } from '@/shared/components/global-search/global-search.component';
 
 @Component({
     selector: 'app-topbar',

@@ -1,0 +1,20 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
+import { FileList } from '@/shared/components/file-downloads-overlay/file-list/file-list.component';
+import { MessageAttachment } from 'api';
+
+@Component({
+    selector: 'app-file-downloads-overlay',
+    imports: [CommonModule, DialogModule, FileList],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './file-downloads-overlay.component.html',
+    styleUrl: './file-downloads-overlay.component.scss'
+})
+export class FileDownloadsOverlay {
+    files = input<Array<MessageAttachment>>([]);
+    visible = input(false);
+    header = input('Attachments');
+    close = output<void>();
+}
+

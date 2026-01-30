@@ -4,11 +4,11 @@ import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScroll
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { appRoutes } from './app.routes';
-import { authInterceptorFn } from '@/interceptors/auth.interceptor';
-import { authErrorInterceptorFn } from '@/interceptors/auth-error.interceptor';
-import { loggingInterceptor } from '@/interceptors/logging-interceptor';
+import { authInterceptorFn } from '@/core/interceptors/auth.interceptor';
+import { authErrorInterceptorFn } from '@/core/interceptors/auth-error.interceptor';
+import { loggingInterceptor } from '@/core/interceptors/logging-interceptor';
 import { fakeBackendInterceptor } from '@/fake-backend/fake-backend-interceptor';
-import { LoadingService } from '@/services/loading/loading.service';
+import { LoadingService } from '@/core/services/loading/loading.service';
 
 export const appConfig: ApplicationConfig = {
     providers: [

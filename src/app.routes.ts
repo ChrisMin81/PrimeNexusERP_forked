@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { AppLayout } from '@/layout/component/app-layout/app-layout.component';
-import { Dashboard } from '@/pages/dashboard/dashboard.component';
-import { Notfound } from '@/pages/notfound/notfound.component';
-import { authGuard, authMatchGuard } from '@/pages/auth/auth-guard';
+import { Dashboard } from '@/features/dashboard/dashboard.component';
+import { Notfound } from '@/features/notfound/notfound.component';
+import { authGuard, authMatchGuard } from '@/features/auth/auth-guard';
 
 export const appRoutes: Routes = [
     {
@@ -13,11 +13,11 @@ export const appRoutes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: Dashboard },
-            { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') }
+            { path: 'pages', loadChildren: () => import('./app/features/pages.routes') }
         ]
     },
     { path: 'notfound', component: Notfound },
-    { path: 'auth', loadChildren: () => import('./app/pages/auth/auth.routes') },
+    { path: 'auth', loadChildren: () => import('./app/features/auth/auth.routes') },
     { path: '**', redirectTo: 'notfound' }
 ];
 

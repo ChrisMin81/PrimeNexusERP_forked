@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
 import { defer, delay, of, throwError } from 'rxjs';
-import { AuthResult } from '@/pages/auth/model/authResult';
+import { AuthResult } from '@/features/auth/model/authResult';
 import { LoginCredentials, Message } from 'api';
 import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { backendFakeData } from '@/fake-backend/backend-fake-data';

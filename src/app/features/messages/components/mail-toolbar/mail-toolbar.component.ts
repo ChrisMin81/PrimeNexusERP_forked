@@ -1,0 +1,28 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BadgeModule } from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
+import { SearchInput } from '@/shared/components/search-input/search-input.component';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
+@Component({
+    selector: 'app-mail-toolbar',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [CommonModule, BadgeModule, ButtonModule, SearchInput],
+    templateUrl: './mail-toolbar.component.html',
+    styleUrl: './mail-toolbar.component.scss'
+})
+export class MailToolbar {
+    title = input<string>('Mail');
+    subtitle = input<string | null>(null);
+    count = input<number>(0);
+    searchLabel = input<string>('Search');
+    showCompose = input<boolean>(true);
+    autocomplete = input<'off' | 'on'>('off');
+
+    refresh = output<void>();
+    compose = output<void>();
+    searchChange = output<string>();
+}
+
+

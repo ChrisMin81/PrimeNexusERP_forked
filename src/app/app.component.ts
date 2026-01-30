@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { LoadingComponent } from '@/services/loading/loading.component';
+import { LoadingComponent } from '@/shared/components/loading/loading.component';
 
 @Component({
     selector: 'app-root',
