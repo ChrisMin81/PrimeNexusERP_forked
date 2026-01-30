@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
@@ -13,7 +13,7 @@ import { MenuModelService } from '@/layout/service/menu-model.service';
     templateUrl: './app-menu.component.html',
     styleUrl: './app-menu.component.scss'
 })
-export class AppMenu {
+export class AppMenu implements OnInit {
     model: MenuItem[] = [];
     private menuModel = inject(MenuModelService);
 

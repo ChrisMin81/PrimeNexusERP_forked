@@ -111,7 +111,7 @@ function paginate(req: HttpRequest<unknown>, data: Message[]) {
 }
 
 function getAudtiUUID(req: HttpRequest<unknown>) {
-    let candidate = req.url.split('/').pop();
+    const candidate = req.url.split('/').pop();
     if (isValidUUID(candidate)) {
         return candidate;
     }

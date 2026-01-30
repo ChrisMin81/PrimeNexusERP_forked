@@ -4,7 +4,7 @@ import { catchError, finalize, of, take, tap, throwError } from 'rxjs';
 import { LoggerService } from '@/core/services/logger/logger';
 import { LoadingService } from '@/core/services/loading/loading.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Message, MessageAttachment, MessageSendingRequest } from 'api';
+import { Message, MessageSendingRequest } from 'api';
 
 @Injectable({ providedIn: 'root' })
 export class MailService {
@@ -39,7 +39,7 @@ export class MailService {
 
     sendMail(payload: MessageSendingRequest & { recipients: string[]; auditUuid?: string }): Signal<Message | undefined> {
         const recipientName = payload.recipientName ?? payload.recipients.join(', ');
-        const { recipients, auditUuid, ...rest } = payload;
+        const { auditUuid, ...rest } = payload;
         const apiPayload: MessageSendingRequest = { ...rest, recipientName };
         return toSignal(
             this.loadingService.showLoaderUntilCompleted(this.http.post<Message>('/api/messages/send', apiPayload)).pipe(

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from './auth-service';
 import { loginRedirectGuard } from './login-redirect.guard';
 
@@ -25,7 +25,7 @@ describe('loginRedirectGuard', () => {
     it('blocks access and redirects to dashboard when already authenticated', () => {
         authService.isLoggedIn.and.returnValue(true);
 
-        const result = executeGuard({} as any, {} as any);
+        const result = executeGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
         expect(result).toBeFalse();
         expect(router.navigate).toHaveBeenCalledWith(['/', 'dashboard']);
@@ -34,7 +34,7 @@ describe('loginRedirectGuard', () => {
     it('allows access to login when not authenticated', () => {
         authService.isLoggedIn.and.returnValue(false);
 
-        const result = executeGuard({} as any, {} as any);
+        const result = executeGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
         expect(result).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();

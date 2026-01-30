@@ -19,11 +19,11 @@ import { FormsModule } from '@angular/forms';
                 [placeholder]="placeholder() ?? null"
                 [autocomplete]="autocomplete()"
                 [(value)]="value"
-                (blur)="onBlur.emit($event)"
-                (focus)="onFocus.emit($event)"
+                (blur)="blurred.emit($event)"
+                (focus)="focused.emit($event)"
                 [clearable]="clearable()"
                 [clearAriaLabel]="clearAriaLabel()"
-                (cleared)="onCleared.emit()"
+                (cleared)="cleared.emit()"
                 [class.p-inputtext-sm]="size() === 'small'"
                 [class.p-inputtext-lg]="size() === 'large'"
             />
@@ -41,7 +41,7 @@ export class FloatLabelInput {
     type = input<string>('text');
     id = input<string | undefined>(undefined);
     styleClass = input<string>('');
-    styles = input<{ [klass: string]: any }>({});
+    styles = input<Record<string, string | number>>({});
     disabled = input<boolean>(false);
     readonly = input<boolean>(false);
     maxlength = input<number | undefined>(undefined);
@@ -52,7 +52,7 @@ export class FloatLabelInput {
     clearAriaLabel = input<string>('Clear input');
 
     // Custom Events
-    onBlur = output<FocusEvent>();
-    onFocus = output<FocusEvent>();
-    onCleared = output<void>();
+    blurred = output<FocusEvent>();
+    focused = output<FocusEvent>();
+    cleared = output<void>();
 }

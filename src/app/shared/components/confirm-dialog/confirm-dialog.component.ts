@@ -22,14 +22,14 @@ export class ConfirmDialog {
     dismissible = input(true);
 
     confirm = output<void>();
-    cancel = output<void>();
+    dismissed = output<void>();
 
     onHide() {
-        this.cancel.emit();
+        this.dismissed.emit();
     }
 
     onCancelClick() {
-        this.cancel.emit();
+        this.dismissed.emit();
     }
 
     onConfirmClick() {

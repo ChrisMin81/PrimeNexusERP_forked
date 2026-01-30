@@ -31,6 +31,6 @@
 <app-file-downloads-overlay
     [files]="attachmentList()"
     [visible]="attachmentsDialogOpen()"
-    (close)="closeAttachments()"
+    (closed)="closeAttachments()"
     header="Attachments"
 />

@@ -12,7 +12,7 @@ import { MailService } from '@/features/messages/services/mail.service';
 })
 export class Dashboard {
     private mailService = inject(MailService);
-    constructor(private router: Router) {}
+    private router = inject(Router);
 
     private inbox = this.mailService.getInbox();
     private sent = this.mailService.getSent();

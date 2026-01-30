@@ -19,8 +19,8 @@ import { InputTextModule } from 'primeng/inputtext';
                 [ngClass]="styleClass()"
                 [ngStyle]="styles()"
                 [(ngModel)]="value"
-                (blur)="onBlur.emit($event)"
-                (focus)="onFocus.emit($event)"
+                (blur)="blurred.emit($event)"
+                (focus)="focused.emit($event)"
                 [class.p-inputtext-sm]="size() === 'small'"
                 [class.p-inputtext-lg]="size() === 'large'"
                 [autocomplete]="autocomplete()"
@@ -92,7 +92,7 @@ export class BaseInputComponent {
     type = input<string>('text');
     id = input<string | undefined>(undefined);
     styleClass = input<string>('');
-    styles = input<{ [klass: string]: any }>({});
+    styles = input<Record<string, string | number>>({});
     disabled = input<boolean>(false);
     readonly = input<boolean>(false);
     maxlength = input<number | undefined>(undefined);
@@ -102,8 +102,8 @@ export class BaseInputComponent {
     clearAriaLabel = input<string>('Clear input');
 
     // Custom Events
-    onBlur = output<FocusEvent>();
-    onFocus = output<FocusEvent>();
+    blurred = output<FocusEvent>();
+    focused = output<FocusEvent>();
     cleared = output<void>();
 
     clearValue() {

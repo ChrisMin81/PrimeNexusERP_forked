@@ -11,7 +11,7 @@ describe('FileDownloadsOverlay Component', () => {
         })
             .overrideComponent(FileDownloadsOverlay, {
                 set: {
-                    template: '<button class="close" (click)="close.emit()">Close</button>'
+                    template: '<button class="close" (click)="closed.emit()">Close</button>'
                 }
             })
             .compileComponents();
@@ -21,9 +21,9 @@ describe('FileDownloadsOverlay Component', () => {
         fixture.detectChanges();
     });
 
-    it('emits close when close is triggered', () => {
+    it('emits closed when close is triggered', () => {
         const emitted: number[] = [];
-        component.close.subscribe(() => emitted.push(1));
+        component.closed.subscribe(() => emitted.push(1));
 
         const button = fixture.nativeElement.querySelector('.close') as HTMLButtonElement | null;
         button?.click();

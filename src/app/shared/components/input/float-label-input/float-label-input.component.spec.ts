@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FloatLabelInput } from './float-label-input.component';
 
 @Component({
-    template: '<app-float-label-input [label]="label" (onCleared)="cleared = true"></app-float-label-input>',
+    template: '<app-float-label-input [label]="label" (cleared)="cleared = true"></app-float-label-input>',
     imports: [FloatLabelInput]
 })
 class HostComponent {
@@ -20,7 +20,7 @@ describe('FloatLabelInput Component', () => {
         })
             .overrideComponent(FloatLabelInput, {
                 set: {
-                    template: '<button class="clear" (click)="onCleared.emit()">Clear</button>'
+                    template: '<button class="clear" (click)="cleared.emit()">Clear</button>'
                 }
             })
             .compileComponents();
@@ -29,7 +29,7 @@ describe('FloatLabelInput Component', () => {
         fixture.detectChanges();
     });
 
-    it('emits onCleared when cleared', () => {
+    it('emits cleared when cleared', () => {
         const button = fixture.nativeElement.querySelector('.clear') as HTMLButtonElement | null;
         button?.click();
         fixture.detectChanges();

@@ -18,17 +18,16 @@ import { LayoutService } from '@/layout/service/layout.service';
 })
 export class AppLayout {
     private destroyRef = inject(DestroyRef);
+    public layoutService = inject(LayoutService);
+    public renderer = inject(Renderer2);
+    public router = inject(Router);
     menuOutsideClickListener: (() => void) | null = null;
 
     @ViewChild(AppSidebar) appSidebar!: AppSidebar;
 
     @ViewChild(AppTopbar) appTopBar!: AppTopbar;
 
-    constructor(
-        public layoutService: LayoutService,
-        public renderer: Renderer2,
-        public router: Router
-    ) {
+    constructor() {
         this.layoutService.overlayOpen$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
             if (!this.menuOutsideClickListener) {
                 this.menuOutsideClickListener = this.renderer.listen('document', 'click', (event) => {

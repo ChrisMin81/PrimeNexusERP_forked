@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular/core';
 import { AppMenu } from '@/layout/component/app-menu/app-menu.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { AppMenu } from '@/layout/component/app-menu/app-menu.component';
     styleUrl: './app-sidebar.component.scss'
 })
 export class AppSidebar {
-    constructor(public el: ElementRef) {}
+    public el = inject(ElementRef);
 }
 
 

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, CanMatchFn, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
 import { AuthService } from './auth-service';
 import { LoggerService } from '@/core/services/logger/logger';
 
@@ -17,7 +17,7 @@ describe('authGuard', () => {
 
     beforeEach(() => {
         authService = jasmine.createSpyObj<AuthService>('AuthService', ['isLoggedIn']);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+        router = jasmine.createSpyObj<Router>('Router', ['navigate', 'parseUrl']);
         logger = jasmine.createSpyObj<LoggerService>('LoggerService', ['debug']);
 
         TestBed.configureTestingModule({
@@ -31,28 +31,31 @@ describe('authGuard', () => {
 
     it('redirects to login when user is not logged in (canActivate)', () => {
         authService.isLoggedIn.and.returnValue(false);
+        const urlTree = {} as UrlTree;
+        router.parseUrl.and.returnValue(urlTree);
 
-        const result = executeCanActivate({} as any, {} as any);
+        const result = executeCanActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
-        expect(result).toBeFalse();
-        expect(router.navigate).toHaveBeenCalledOnceWith(['/', 'auth', 'login']);
+        expect(result).toBe(urlTree);
+        expect(router.parseUrl).toHaveBeenCalledOnceWith('/auth/login');
         expect(logger.debug).toHaveBeenCalledWith('User is not logged in, redirecting to login page');
     });
 
     it('redirects to login when user is not logged in (canMatch)', () => {
         authService.isLoggedIn.and.returnValue(false);
+        const urlTree = {} as UrlTree;
+        router.parseUrl.and.returnValue(urlTree);
 
-        const matchResult = executeCanMatch({} as any, [] as any);
+        const matchResult = executeCanMatch({} as Route, [] as UrlSegment[]);
 
-        expect(matchResult).toBeFalse();
-        expect(router.navigate).toHaveBeenCalledOnceWith(['/', 'auth', 'login']);
-        expect(logger.debug).toHaveBeenCalledWith('User is not logged in, redirecting to login page');
+        expect(matchResult).toBe(urlTree);
+        expect(router.parseUrl).toHaveBeenCalledOnceWith('/auth/login');
     });
 
     it('allows navigation when user is logged in (canActivate)', () => {
         authService.isLoggedIn.and.returnValue(true);
 
-        const result = executeCanActivate({} as any, {} as any);
+        const result = executeCanActivate({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot);
 
         expect(result).toBeTrue();
         expect(router.navigate).not.toHaveBeenCalled();
@@ -62,10 +65,18 @@ describe('authGuard', () => {
     it('allows navigation when user is logged in (canMatch)', () => {
         authService.isLoggedIn.and.returnValue(true);
 
-        const matchResult = executeCanMatch({} as any, [] as any);
+        const matchResult = executeCanMatch({} as Route, [] as UrlSegment[]);
 
         expect(matchResult).toBeTrue();
-        expect(router.navigate).not.toHaveBeenCalled();
-        expect(logger.debug).toHaveBeenCalledWith('User is redirected to login page');
+        expect(router.parseUrl).not.toHaveBeenCalled();
+    });
+
+    it('blocks non-root routes when user is not logged in (canMatch)', () => {
+        authService.isLoggedIn.and.returnValue(false);
+
+        const matchResult = executeCanMatch({} as Route, [{ path: 'pages' }] as UrlSegment[]);
+
+        expect(matchResult).toBeFalse();
+        expect(router.parseUrl).not.toHaveBeenCalled();
     });
 });

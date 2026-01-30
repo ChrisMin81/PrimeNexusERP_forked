@@ -1,7 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 
 interface LoggingFunction {
-    (...args: any[]): void;
+    (...args: unknown[]): void;
 }
 export interface Logger {
     info: LoggingFunction;
@@ -27,37 +27,36 @@ export interface Logger {
  */
 @Injectable({ providedIn: 'root' })
 export class LoggerService implements Logger {
-    constructor() {}
-    trace(...args: any[]): void {
+    trace(...args: unknown[]): void {
         if (isDevMode()) {
             console.trace.apply(null, args);
         }
     }
-    debug(...args: any[]): void {
+    debug(...args: unknown[]): void {
         if (isDevMode()) {
             console.trace.apply(null, args);
         }
     }
 
-    log(...args: any[]): void {
+    log(...args: unknown[]): void {
         if (isDevMode()) {
             console.log.apply(null, args);
         }
     }
 
-    info(...args: any[]): void {
+    info(...args: unknown[]): void {
         if (isDevMode()) {
             console.info.apply(null, args);
         }
     }
 
-    warn(...args: any[]): void {
+    warn(...args: unknown[]): void {
         if (isDevMode()) {
             console.warn.apply(null, args);
         }
     }
 
-    error(...args: any[]): void {
+    error(...args: unknown[]): void {
         if (isDevMode()) {
             console.log('Error =>>>>');
             console.error.apply(null, args);

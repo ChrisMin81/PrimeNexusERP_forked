@@ -22,6 +22,11 @@ interface MenuChangeEvent {
     routeEvent?: boolean;
 }
 
+type ViewTransition = { ready: Promise<void> };
+type ViewTransitionDocument = Document & {
+    startViewTransition?: (callback: () => void) => ViewTransition;
+};
+
 @Injectable({
     providedIn: 'root'
 })
@@ -48,11 +53,11 @@ export class LayoutService {
 
     private configUpdate = new Subject<layoutConfig>();
 
-    private overlayOpen = new Subject<any>();
+    private overlayOpen = new Subject<void>();
 
     private menuSource = new Subject<MenuChangeEvent>();
 
-    private resetSource = new Subject();
+    private resetSource = new Subject<void>();
 
     menuSource$ = this.menuSource.asObservable();
 
@@ -99,20 +104,24 @@ export class LayoutService {
     }
 
     private handleDarkModeTransition(config: layoutConfig): void {
-        if ((document as any).startViewTransition) {
-            this.startViewTransition(config);
-        } else {
-            this.toggleDarkMode(config);
-            this.onTransitionEnd();
+        const startViewTransition = (document as ViewTransitionDocument).startViewTransition;
+        if (startViewTransition) {
+            this.startViewTransition(config, startViewTransition);
+            return;
         }
+        this.toggleDarkMode(config);
+        this.onTransitionEnd();
     }
 
-    private startViewTransition(config: layoutConfig): void {
-        const transition = (document as any).startViewTransition(() => {
+    private startViewTransition(
+        config: layoutConfig,
+        startViewTransition: NonNullable<ViewTransitionDocument['startViewTransition']>
+    ): void {
+        const transition = startViewTransition(() => {
             this.toggleDarkMode(config);
         });
 
-        transition.ready
+        transition?.ready
             .then(() => {
                 this.onTransitionEnd();
             })
@@ -140,7 +149,7 @@ export class LayoutService {
             this.layoutState.update((prev) => ({ ...prev, overlayMenuActive: !this.layoutState().overlayMenuActive }));
 
             if (this.layoutState().overlayMenuActive) {
-                this.overlayOpen.next(null);
+                this.overlayOpen.next();
             }
         }
 
@@ -150,7 +159,7 @@ export class LayoutService {
             this.layoutState.update((prev) => ({ ...prev, staticMenuMobileActive: !this.layoutState().staticMenuMobileActive }));
 
             if (this.layoutState().staticMenuMobileActive) {
-                this.overlayOpen.next(null);
+                this.overlayOpen.next();
             }
         }
     }
@@ -173,6 +182,6 @@ export class LayoutService {
     }
 
     reset() {
-        this.resetSource.next(true);
+        this.resetSource.next();
     }
 }

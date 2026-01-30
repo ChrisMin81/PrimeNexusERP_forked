@@ -41,9 +41,9 @@
                 autocomplete="on"
                 (valueChange)="onSearchChange($event)"
                 [clearable]="true"
-                (onFocus)="handleFocus()"
-                (onBlur)="handleBlur()"
-                (onCleared)="onCleared()"
+                (focused)="handleFocus()"
+                (blurred)="handleBlur()"
+                (cleared)="onCleared()"
             />
         </div>
     </div>

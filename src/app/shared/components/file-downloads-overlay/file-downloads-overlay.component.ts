@@ -15,6 +15,6 @@ export class FileDownloadsOverlay {
     files = input<Array<MessageAttachment>>([]);
     visible = input(false);
     header = input('Attachments');
-    close = output<void>();
+    closed = output<void>();
 }
 

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
 import { Login } from './login.component';
 import { AuthService } from '@/features/auth/auth-service';
@@ -69,12 +68,14 @@ describe('Login Component', () => {
 
     it('guards against prototype pollution when using form value', () => {
         component.form.setValue({ email: 'user@test.com', password: 'secret' });
-        Object.assign((component.form as any).value, { '__proto__': { admin: true }, extra: 'value' });
+        const formValue = component.form.value as Record<string, unknown>;
+        Object.assign(formValue, { ['__proto__']: { admin: true }, extra: 'value' });
 
         component.login();
 
         expect(authService.login).toHaveBeenCalledOnceWith('user@test.com', 'secret');
-        expect(({} as any).admin).toBeUndefined();
+        const empty = {} as { admin?: boolean };
+        expect(empty.admin).toBeUndefined();
     });
 });
 

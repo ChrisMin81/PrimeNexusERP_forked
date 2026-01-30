@@ -20,10 +20,9 @@ import { GlobalSearchComponent } from '@/shared/components/global-search/global-
 export class AppTopbar {
     items!: MenuItem[];
     private mailService = inject(MailService);
+    public layoutService = inject(LayoutService);
     private inboxMessages = this.mailService.getInbox();
     unreadCount = computed(() => (this.inboxMessages() ?? []).filter((message) => !message.readDate).length);
-
-    constructor(public layoutService: LayoutService) {}
 
     toggleDarkMode() {
         this.layoutService.layoutConfig.update((state: layoutConfig) => ({ ...state, darkTheme: !state.darkTheme }));

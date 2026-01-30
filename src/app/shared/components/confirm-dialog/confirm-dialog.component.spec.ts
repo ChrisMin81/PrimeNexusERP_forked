@@ -26,9 +26,9 @@ describe('ConfirmDialog Component', () => {
         expect(emitted).toEqual([true]);
     });
 
-    it('emits cancel on cancel action and on hide', () => {
+    it('emits dismissed on cancel action and on hide', () => {
         const emitted: number[] = [];
-        component.cancel.subscribe(() => emitted.push(1));
+        component.dismissed.subscribe(() => emitted.push(1));
 
         component.onCancelClick();
         component.onHide();

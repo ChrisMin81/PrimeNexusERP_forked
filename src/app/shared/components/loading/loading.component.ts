@@ -3,7 +3,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoadingService } from '@/core/services/loading/loading.service';
 
 @Component({
-    selector: 'loading',
+    selector: 'app-loading',
     templateUrl: './loading.component.html',
     styleUrls: ['./loading.component.css'],
     imports: [ProgressSpinnerModule],

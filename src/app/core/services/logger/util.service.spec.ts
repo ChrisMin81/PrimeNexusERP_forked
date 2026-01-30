@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SecurityContext } from '@angular/core';
 import { UtilService } from './util.service';
 
@@ -7,9 +7,12 @@ describe('UtilService', () => {
     let service: UtilService;
     let sanitizer: jasmine.SpyObj<DomSanitizer>;
 
+    let safeUrl: SafeResourceUrl;
+
     beforeEach(() => {
         sanitizer = jasmine.createSpyObj<DomSanitizer>('DomSanitizer', ['sanitize', 'bypassSecurityTrustResourceUrl']);
-        sanitizer.bypassSecurityTrustResourceUrl.and.returnValue('safe-url' as any);
+        safeUrl = 'safe-url' as unknown as SafeResourceUrl;
+        sanitizer.bypassSecurityTrustResourceUrl.and.returnValue(safeUrl);
         sanitizer.sanitize.and.returnValue('safe-url');
 
         TestBed.configureTestingModule({
@@ -30,7 +33,7 @@ describe('UtilService', () => {
 
         expect(urlSpy).toHaveBeenCalled();
         expect(sanitizer.bypassSecurityTrustResourceUrl).toHaveBeenCalledWith('blob:url');
-        expect(sanitizer.sanitize).toHaveBeenCalledWith(SecurityContext.RESOURCE_URL, 'safe-url' as any);
+        expect(sanitizer.sanitize).toHaveBeenCalledWith(SecurityContext.RESOURCE_URL, safeUrl);
         expect(openSpy).toHaveBeenCalledWith('safe-url');
     });
 

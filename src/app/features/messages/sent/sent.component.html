@@ -31,7 +31,7 @@
 <app-file-downloads-overlay
     [files]="attachmentList()"
     [visible]="attachmentsDialogOpen()"
-    (close)="closeAttachments()"
+    (closed)="closeAttachments()"
     header="Attachments"
 />
 
@@ -43,5 +43,5 @@
     cancelLabel="Cancel"
     [confirmLoading]="deletingId() !== null"
     (confirm)="confirmDelete()"
-    (cancel)="cancelDelete()"
+    (dismissed)="cancelDelete()"
 />

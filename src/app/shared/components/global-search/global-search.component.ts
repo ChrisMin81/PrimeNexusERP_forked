@@ -16,7 +16,7 @@ interface SearchResult {
     id: string;
     label: string;
     description?: string;
-    route: any[];
+    route: Array<string | number>;
     type: SearchResultType;
     badge?: string;
 }
@@ -86,16 +86,19 @@ export class GlobalSearchComponent {
             (messages ?? [])
                 .filter((message) => this.messageMatches(message, term))
                 .slice(0, 5)
-                .forEach((message) =>
+                .forEach((message) => {
+                    if (!message.auditUuid) {
+                        return;
+                    }
                     matches.push({
                         id: `${box}-${message.auditUuid}`,
                         label: message.subject!,
-                        description: `${message.senderAddress} • ${this.formatTimestamp(message.messageDate)}`,
+                        description: `${message.senderAddress} ??? ${this.formatTimestamp(message.messageDate)}`,
                         route: ['/pages/messages', box, message.auditUuid],
                         type: 'message',
                         badge: box
-                    })
-                );
+                    });
+                });
         });
         return matches;
     });
@@ -115,7 +118,7 @@ export class GlobalSearchComponent {
     hasResults = computed(() => this.groupedResults().some((group) => group.items.length > 0));
 
     onSearchChange(term: string | null | undefined) {
-        if (!!term) {
+        if (term) {
             this.searchTerm.set(term);
         } else {
             this.searchTerm.set('');
@@ -221,8 +224,8 @@ export class GlobalSearchComponent {
         }, delay);
     }
 
-    private flattenMenu(menu: MenuItem[], parentLabel?: string): Array<{ label: string; route: any[]; parentLabel?: string }> {
-        const result: Array<{ label: string; route: any[]; parentLabel?: string }> = [];
+    private flattenMenu(menu: MenuItem[], parentLabel?: string): Array<{ label: string; route: Array<string | number>; parentLabel?: string }> {
+        const result: Array<{ label: string; route: Array<string | number>; parentLabel?: string }> = [];
         menu.forEach((item) => {
             const currentRoute = this.normalizeRoute(item.routerLink);
             if (currentRoute.length) {
@@ -235,11 +238,18 @@ export class GlobalSearchComponent {
         return result;
     }
 
-    private normalizeRoute(route: MenuItem['routerLink']): any[] {
+    private normalizeRoute(route: MenuItem['routerLink']): Array<string | number> {
         if (!route) {
             return [];
         }
-        return Array.isArray(route) ? route : [route];
+
+        if (Array.isArray(route)) {
+            return route.map((segment) =>
+                typeof segment === 'string' || typeof segment === 'number' ? segment : String(segment)
+            );
+        }
+
+        return typeof route === 'string' || typeof route === 'number' ? [route] : [String(route)];
     }
 
     private messageMatches(message: Message, term: string) {
@@ -248,8 +258,8 @@ export class GlobalSearchComponent {
     }
 
     private formatTimestamp(value: Date | string | undefined) {
-        if(!value) {
-            return null
+        if (!value) {
+            return null;
         }
         if (value instanceof Date) {
             return value.toLocaleString();

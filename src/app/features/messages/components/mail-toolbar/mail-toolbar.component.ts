@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { SearchInput } from '@/shared/components/search-input/search-input.component';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
     selector: 'app-mail-toolbar',

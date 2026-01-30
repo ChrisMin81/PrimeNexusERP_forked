@@ -48,6 +48,7 @@ describe('MailService', () => {
         });
 
         expect(http.post).toHaveBeenCalledWith('/api/messages/send', {
+            recipients: ['a@b.com', 'b@b.com'],
             subject: 'Subject',
             body: 'Body',
             recipientName: 'a@b.com, b@b.com'
