@@ -1,4 +1,14 @@
-You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
+You are an expert in TypeScript, Angular, Angular Testing, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## General Rules
+
+- Do not use experimental or deprecated features.
+- use `npm run lint` to check for linting errors.
+- use `npm run test-headless` to run unit tests.
+- use `npm run build` to build the project.
+- use the `projects/api/src/lib` folder for definitions for api usage.
+- add comments to your code wherever it makes sense.
+- use `npm run format` to format your code.
 
 ## TypeScript Best Practices
 
@@ -32,6 +42,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
 - When using external templates/styles, use paths relative to the component TS file.
+- always write or update to a full functional test suite for your component whenever created or changed.
 
 ## State Management
 
@@ -45,6 +56,9 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Keep templates simple and avoid complex logic
 - Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
 - Use the async pipe to handle observables
+- try to make use of PrimeNG components whenever possible.
+- use tailwind classes instead of inline styles
+- use `angular-aria` for accessibility
 - Do not assume globals like (`new Date()`) are available.
 - Do not write arrow functions in templates (they are not supported).
 
@@ -53,3 +67,12 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+
+## Testing
+
+- Use `TestBed` for Angular services, components, and directives.
+- Prefer `provide` overrides and spies over real dependencies.
+- Use `fakeAsync` and `tick` only when necessary; prefer synchronous tests when possible.
+- Assert observable teardown behavior (completion/error) when it affects state.
+- Keep tests deterministic; avoid reliance on timers or global state.
