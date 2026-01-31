@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
     "test": "ng test",
+    "test-preview": "ng test --browsers=preview",
     "test-headless": "ng test --watch=false"
   },
   "private": true,
@@ -35,6 +36,7 @@
     "@angular/build": "^21.1.2",
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.2",
+    "@vitest/browser-preview": "^4.0.18",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.30.1",
     "eslint-config-prettier": "^10.1.5",
