@@ -4,20 +4,21 @@ import { Router } from '@angular/router';
 import { Sent } from './sent.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Sent Component', () => {
     let fixture: ComponentFixture<Sent>;
     let component: Sent;
-    let mailService: jasmine.SpyObj<MailService>;
-    let router: jasmine.SpyObj<Router>;
+    let mailService: SpyObj<MailService>;
+    let router: SpyObj<Router>;
 
     const sentSignal = signal<Message[] | undefined>(undefined);
 
     beforeEach(async () => {
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['getSent', 'refreshSent', 'deleteSentMessage']);
-        mailService.getSent.and.returnValue(sentSignal as Signal<Message[] | undefined>);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
+        mailService = createSpyObj<MailService>(['getSent', 'refreshSent', 'deleteSentMessage']);
+        mailService.getSent.mockReturnValue(sentSignal as Signal<Message[] | undefined>);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
 
         await TestBed.configureTestingModule({
             imports: [Sent],
@@ -55,21 +56,21 @@ describe('Sent Component', () => {
 
     it('opens and closes attachments', () => {
         component.openAttachments(new Event('click'), { attachments: [] } as Message);
-        expect(component.attachmentsDialogOpen()).toBeTrue();
+        expect(component.attachmentsDialogOpen()).toBe(true);
 
         component.closeAttachments();
-        expect(component.attachmentsDialogOpen()).toBeFalse();
+        expect(component.attachmentsDialogOpen()).toBe(false);
     });
 
     it('handles delete confirmation flow', () => {
         const message = { auditUuid: '1', subject: 'Test' } as Message;
 
         component.requestDelete(message);
-        expect(component.confirmDialogVisible()).toBeTrue();
+        expect(component.confirmDialogVisible()).toBe(true);
         expect(component.messagePendingDeletion()).toBe(message);
 
         component.confirmDelete();
-        expect(component.confirmDialogVisible()).toBeFalse();
+        expect(component.confirmDialogVisible()).toBe(false);
         expect(component.messagePendingDeletion()).toBeNull();
         expect(component.deletingId()).toBe('1');
         expect(mailService.deleteSentMessage).toHaveBeenCalled();

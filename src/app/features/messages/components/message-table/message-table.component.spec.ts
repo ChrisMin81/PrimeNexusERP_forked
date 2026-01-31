@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageTableComponent } from './message-table.component';
 import { Message } from 'api';
+import { vi } from 'vitest';
 
 describe('MessageTableComponent', () => {
     let fixture: ComponentFixture<MessageTableComponent>;
@@ -22,14 +23,14 @@ describe('MessageTableComponent', () => {
         fixture.componentRef.setInput('context', 'drafts');
         fixture.detectChanges();
 
-        expect(component.hasAvatar()).toBeFalse();
+        expect(component.hasAvatar()).toBe(false);
         expect(component.primaryHeader()).toBe('To');
         expect(component.timestampHeader()).toBe('Updated');
 
         fixture.componentRef.setInput('context', 'inbox');
         fixture.detectChanges();
 
-        expect(component.hasAvatar()).toBeTrue();
+        expect(component.hasAvatar()).toBe(true);
         expect(component.primaryHeader()).toBe('Sender');
         expect(component.timestampHeader()).toBe('Received');
     });
@@ -64,12 +65,12 @@ describe('MessageTableComponent', () => {
         fixture.componentRef.setInput('loadingDeleteId', 'abc');
         fixture.detectChanges();
 
-        expect(component.isDeleting(message)).toBeTrue();
+        expect(component.isDeleting(message)).toBe(true);
     });
 
     it('emits outputs for row actions', () => {
         const message = { auditUuid: '1' } as Message;
-        const stopEvent = { stopPropagation: jasmine.createSpy('stopPropagation') } as unknown as Event;
+        const stopEvent = { stopPropagation: vi.fn() } as unknown as Event;
         const emitted: string[] = [];
 
         component.open.subscribe(() => emitted.push('open'));

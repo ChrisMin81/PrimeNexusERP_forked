@@ -4,20 +4,21 @@ import { Router } from '@angular/router';
 import { Drafts } from './drafts.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Drafts Component', () => {
     let fixture: ComponentFixture<Drafts>;
     let component: Drafts;
-    let mailService: jasmine.SpyObj<MailService>;
-    let router: jasmine.SpyObj<Router>;
+    let mailService: SpyObj<MailService>;
+    let router: SpyObj<Router>;
 
     const draftsSignal = signal<Message[] | undefined>(undefined);
 
     beforeEach(async () => {
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['getDrafts', 'refreshDrafts']);
-        mailService.getDrafts.and.returnValue(draftsSignal as Signal<Message[] | undefined>);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
+        mailService = createSpyObj<MailService>(['getDrafts', 'refreshDrafts']);
+        mailService.getDrafts.mockReturnValue(draftsSignal as Signal<Message[] | undefined>);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
 
         await TestBed.configureTestingModule({
             imports: [Drafts],
@@ -55,10 +56,10 @@ describe('Drafts Component', () => {
 
     it('opens and closes attachments', () => {
         component.openAttachments(new Event('click'), { attachments: [] } as Message);
-        expect(component.attachmentsDialogOpen()).toBeTrue();
+        expect(component.attachmentsDialogOpen()).toBe(true);
 
         component.closeAttachments();
-        expect(component.attachmentsDialogOpen()).toBeFalse();
+        expect(component.attachmentsDialogOpen()).toBe(false);
     });
 
     it('routes to composer for edit/send', () => {

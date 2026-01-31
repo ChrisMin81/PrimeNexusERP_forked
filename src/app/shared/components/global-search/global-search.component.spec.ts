@@ -9,13 +9,14 @@ import { MailService } from '@/features/messages/services/mail.service';
 import { GlobalHotkeyService } from '@/core/services/global-hotkey.service';
 import { Message } from 'api';
 import { MenuItem } from 'primeng/api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('GlobalSearchComponent', () => {
     let fixture: ComponentFixture<GlobalSearchComponent>;
     let component: GlobalSearchComponent;
-    let router: jasmine.SpyObj<Router>;
-    let menuModel: jasmine.SpyObj<MenuModelService>;
-    let mailService: jasmine.SpyObj<MailService>;
+    let router: SpyObj<Router>;
+    let menuModel: SpyObj<MenuModelService>;
+    let mailService: SpyObj<MailService>;
     let hotkeys: { ctrlF$: Subject<void> };
 
     const inboxSignal = signal<Message[] | undefined>(undefined);
@@ -23,13 +24,13 @@ describe('GlobalSearchComponent', () => {
     const draftsSignal = signal<Message[] | undefined>(undefined);
 
     beforeEach(async () => {
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
-        menuModel = jasmine.createSpyObj<MenuModelService>('MenuModelService', ['getMenuItems']);
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['getInbox', 'getSent', 'getDrafts']);
-        mailService.getInbox.and.returnValue(inboxSignal as Signal<Message[] | undefined>);
-        mailService.getSent.and.returnValue(sentSignal as Signal<Message[] | undefined>);
-        mailService.getDrafts.and.returnValue(draftsSignal as Signal<Message[] | undefined>);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
+        menuModel = createSpyObj<MenuModelService>(['getMenuItems']);
+        mailService = createSpyObj<MailService>(['getInbox', 'getSent', 'getDrafts']);
+        mailService.getInbox.mockReturnValue(inboxSignal as Signal<Message[] | undefined>);
+        mailService.getSent.mockReturnValue(sentSignal as Signal<Message[] | undefined>);
+        mailService.getDrafts.mockReturnValue(draftsSignal as Signal<Message[] | undefined>);
         hotkeys = { ctrlF$: new Subject<void>() };
 
         const menuItems: MenuItem[] = [
@@ -40,7 +41,7 @@ describe('GlobalSearchComponent', () => {
                 items: [{ label: 'Sent', routerLink: ['/pages/messages/sent'] }]
             }
         ];
-        menuModel.getMenuItems.and.returnValue(menuItems);
+        menuModel.getMenuItems.mockReturnValue(menuItems);
 
         await TestBed.configureTestingModule({
             imports: [GlobalSearchComponent],
@@ -85,7 +86,7 @@ describe('GlobalSearchComponent', () => {
 
         expect(router.navigate).toHaveBeenCalledWith(['/pages/messages/inbox']);
         expect(component.searchTerm()).toBe('');
-        expect(component.expanded()).toBeFalse();
+        expect(component.expanded()).toBe(false);
     });
 
     it('clears the search term on cleared', () => {

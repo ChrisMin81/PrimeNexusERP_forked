@@ -8,38 +8,39 @@ import { MessageDetail } from './message-detail.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { LoggerService } from '@/core/services/logger/logger';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('MessageDetail Component', () => {
     let fixture: ComponentFixture<MessageDetail>;
     let component: MessageDetail;
-    let mailService: jasmine.SpyObj<MailService>;
-    let router: jasmine.SpyObj<Router>;
+    let mailService: SpyObj<MailService>;
+    let router: SpyObj<Router>;
 
     const inboxSignal = signal<Message[] | undefined>(undefined);
     const sentSignal = signal<Message[] | undefined>(undefined);
     const draftsSignal = signal<Message[] | undefined>(undefined);
 
     const setup = async (box: 'inbox' | 'sent' | 'drafts', id: string) => {
-        mailService = jasmine.createSpyObj<MailService>('MailService', [
+        mailService = createSpyObj<MailService>([
             'getInbox',
             'getSent',
             'getDrafts',
             'markInboxAsRead'
         ]);
-        mailService.getInbox.and.returnValue(inboxSignal as Signal<Message[] | undefined>);
-        mailService.getSent.and.returnValue(sentSignal as Signal<Message[] | undefined>);
-        mailService.getDrafts.and.returnValue(draftsSignal as Signal<Message[] | undefined>);
+        mailService.getInbox.mockReturnValue(inboxSignal as Signal<Message[] | undefined>);
+        mailService.getSent.mockReturnValue(sentSignal as Signal<Message[] | undefined>);
+        mailService.getDrafts.mockReturnValue(draftsSignal as Signal<Message[] | undefined>);
 
-        router = jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation']);
-        router.navigate.and.resolveTo(true);
-        router.getCurrentNavigation.and.returnValue(null);
+        router = createSpyObj<Router>(['navigate', 'getCurrentNavigation']);
+        router.navigate.mockResolvedValue(true);
+        router.getCurrentNavigation.mockReturnValue(null);
 
         await TestBed.configureTestingModule({
             imports: [MessageDetail],
             providers: [
                 { provide: MailService, useValue: mailService },
                 { provide: Router, useValue: router },
-                { provide: LoggerService, useValue: jasmine.createSpyObj('LoggerService', ['debug']) },
+                { provide: LoggerService, useValue: createSpyObj<LoggerService>(['debug']) },
                 {
                     provide: ActivatedRoute,
                     useValue: {
@@ -66,7 +67,7 @@ describe('MessageDetail Component', () => {
         await setup('inbox', id);
 
         expect(component.timestampLabel()).toBe('Received');
-        expect(component.showReply()).toBeTrue();
+        expect(component.showReply()).toBe(true);
     });
 
     it('uses sent label and reply handling for sent box', async () => {
@@ -77,7 +78,7 @@ describe('MessageDetail Component', () => {
         await fixture.whenStable();
 
         expect(component.timestampLabel()).toBe('Sent');
-        expect(component.showReply()).toBeTrue();
+        expect(component.showReply()).toBe(true);
     });
 
     it('navigates to compose when editing a draft', async () => {

@@ -8,7 +8,14 @@ import { TextareaModule } from 'primeng/textarea';
 import { TagModule } from 'primeng/tag';
 import { MailService } from '@/features/messages/services/mail.service';
 import { LoadingService } from '@/core/services/loading/loading.service';
-import { v4 as uuidV4, validate as isValidUUID } from 'uuid';
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const generateDraftId = () => {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+        return crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
 @Component({
     selector: 'app-compose',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,7 +42,7 @@ export class Compose {
     hasRecipient = computed(() => this.form.controls.recipients.value.length > 0 || this.recipientInput().trim().length > 0);
     canSubmit = computed(() => this.hasRecipient() && this.form.controls.subject.valid && this.form.controls.content.valid && !this.loadingService.loading());
 
-    private draftId = signal<string>(uuidV4());
+    private draftId = signal<string>(generateDraftId());
 
     constructor() {
         this.prefillFromQuery();
@@ -118,7 +125,7 @@ export class Compose {
             this.form.controls.content.setValue(contentParam);
         }
         const draftIdParam = params.get('draftId');
-        if (isValidUUID(draftIdParam)) {
+        if (draftIdParam && uuidPattern.test(draftIdParam)) {
             this.draftId.set(draftIdParam!);
         }
     }

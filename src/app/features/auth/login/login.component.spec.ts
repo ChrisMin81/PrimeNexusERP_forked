@@ -3,14 +3,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
 import { Login } from './login.component';
 import { AuthService } from '@/features/auth/auth-service';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Login Component', () => {
     let fixture: ComponentFixture<Login>;
     let component: Login;
-    let authService: jasmine.SpyObj<AuthService>;
+    let authService: SpyObj<AuthService>;
 
     beforeEach(async () => {
-        authService = jasmine.createSpyObj<AuthService>('AuthService', ['login']);
+        authService = createSpyObj<AuthService>(['login']);
 
         await TestBed.configureTestingModule({
             imports: [Login, ReactiveFormsModule],
@@ -63,7 +64,8 @@ describe('Login Component', () => {
 
         component.login();
 
-        expect(authService.login).toHaveBeenCalledOnceWith('user@test.com', 'super-secret');
+        expect(authService.login).toHaveBeenCalledOnce();
+        expect(authService.login).toHaveBeenCalledWith('user@test.com', 'super-secret');
     });
 
     it('guards against prototype pollution when using form value', () => {
@@ -73,7 +75,8 @@ describe('Login Component', () => {
 
         component.login();
 
-        expect(authService.login).toHaveBeenCalledOnceWith('user@test.com', 'secret');
+        expect(authService.login).toHaveBeenCalledOnce();
+        expect(authService.login).toHaveBeenCalledWith('user@test.com', 'secret');
         const empty = {} as { admin?: boolean };
         expect(empty.admin).toBeUndefined();
     });

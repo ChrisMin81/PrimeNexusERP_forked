@@ -1,6 +1,8 @@
 import { Message } from 'api';
 
-export function filterMessagesByTerm(messages: Message[] | undefined | null, term: string, fields: Array<keyof Message | 'body'>): Message[] {
+type MessageField = Extract<keyof Message, string> | 'body';
+
+export function filterMessagesByTerm(messages: Message[] | undefined | null, term: string, fields: MessageField[]): Message[] {
     if (!messages) {
         return [];
     }

@@ -34,6 +34,6 @@ describe('FloatLabelInput Component', () => {
         button?.click();
         fixture.detectChanges();
 
-        expect(fixture.componentInstance.cleared).toBeTrue();
+        expect(fixture.componentInstance.cleared).toBe(true);
     });
 });

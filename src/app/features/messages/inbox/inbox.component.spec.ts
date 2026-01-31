@@ -5,22 +5,23 @@ import { Inbox } from './inbox.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { LoggerService } from '@/core/services/logger/logger';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Inbox Component', () => {
     let fixture: ComponentFixture<Inbox>;
     let component: Inbox;
-    let mailService: jasmine.SpyObj<MailService>;
-    let router: jasmine.SpyObj<Router>;
-    let logger: jasmine.SpyObj<LoggerService>;
+    let mailService: SpyObj<MailService>;
+    let router: SpyObj<Router>;
+    let logger: SpyObj<LoggerService>;
 
     const inboxSignal = signal<Message[] | undefined>(undefined);
 
     beforeEach(async () => {
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['getInbox', 'refreshInbox', 'deleteInboxMessage']);
-        mailService.getInbox.and.returnValue(inboxSignal as Signal<Message[] | undefined>);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
-        logger = jasmine.createSpyObj<LoggerService>('LoggerService', ['debug']);
+        mailService = createSpyObj<MailService>(['getInbox', 'refreshInbox', 'deleteInboxMessage']);
+        mailService.getInbox.mockReturnValue(inboxSignal as Signal<Message[] | undefined>);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
+        logger = createSpyObj<LoggerService>(['debug']);
 
         await TestBed.configureTestingModule({
             imports: [Inbox],
@@ -78,7 +79,7 @@ describe('Inbox Component', () => {
 
         component.openAttachments(new Event('click'), message);
 
-        expect(component.attachmentsDialogOpen()).toBeTrue();
+        expect(component.attachmentsDialogOpen()).toBe(true);
         expect(component.attachmentList().length).toBe(1);
         expect(logger.debug).toHaveBeenCalled();
     });
@@ -87,10 +88,10 @@ describe('Inbox Component', () => {
         const message = { auditUuid: '1', subject: 'Test' } as Message;
 
         component.requestDelete(message);
-        expect(component.confirmDialogVisible()).toBeTrue();
+        expect(component.confirmDialogVisible()).toBe(true);
 
         component.confirmDelete();
-        expect(component.confirmDialogVisible()).toBeFalse();
+        expect(component.confirmDialogVisible()).toBe(false);
         expect(component.messagePendingDeletion()).toBeNull();
         expect(component.deletingId()).toBe('1');
         expect(mailService.deleteInboxMessage).toHaveBeenCalled();

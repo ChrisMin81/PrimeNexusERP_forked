@@ -1,24 +1,25 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { signal } from '@angular/core';
 
 import { MailService } from './mail.service';
 import { LoggerService } from '@/core/services/logger/logger';
 import { LoadingService } from '@/core/services/loading/loading.service';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('MailService', () => {
     let service: MailService;
-    let http: jasmine.SpyObj<HttpClient>;
-    let loadingService: jasmine.SpyObj<LoadingService>;
-    let logger: jasmine.SpyObj<LoggerService>;
+    let http: SpyObj<HttpClient>;
+    let loadingService: SpyObj<LoadingService>;
+    let logger: SpyObj<LoggerService>;
 
     beforeEach(() => {
-        http = jasmine.createSpyObj<HttpClient>('HttpClient', ['get', 'post', 'delete']);
-        loadingService = jasmine.createSpyObj<LoadingService>('LoadingService', ['showLoaderUntilCompleted']);
-        loadingService.showLoaderUntilCompleted.and.callFake((source) => source);
-        logger = jasmine.createSpyObj<LoggerService>('LoggerService', ['trace']);
+        http = createSpyObj<HttpClient>(['get', 'post', 'delete']);
+        loadingService = createSpyObj<LoadingService>(['showLoaderUntilCompleted']);
+        loadingService.showLoaderUntilCompleted.mockImplementation((source: Observable<unknown>) => source);
+        logger = createSpyObj<LoggerService>(['trace']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -34,8 +35,8 @@ describe('MailService', () => {
 
     it('sends mail and updates sent/drafts state', () => {
         const sentMessage = { auditUuid: '1', subject: 'Subject', body: 'Body', messageDate: '' } as Message;
-        http.post.and.returnValue(of(sentMessage));
-        http.get.and.returnValue(of([]));
+        http.post.mockReturnValue(of(sentMessage));
+        http.get.mockReturnValue(of([]));
 
         const draftsSignal = signal<Message[] | undefined>([{ auditUuid: 'draft-1' } as Message]);
         (service as unknown as { draftsSignal: typeof draftsSignal }).draftsSignal = draftsSignal;
@@ -59,8 +60,8 @@ describe('MailService', () => {
 
     it('deletes inbox messages and clears the delete signal', () => {
         const inboxMessage = { auditUuid: 'abc', subject: 'Hello', body: 'Body', messageDate: '' } as Message;
-        http.get.and.returnValue(of([inboxMessage]));
-        http.delete.and.returnValue(of(void 0));
+        http.get.mockReturnValue(of([inboxMessage]));
+        http.delete.mockReturnValue(of(void 0));
 
         const inboxSignal = service.getInbox();
         expect(inboxSignal()?.length).toBe(1);
@@ -73,7 +74,7 @@ describe('MailService', () => {
     });
 
     it('refreshes inbox by reloading messages', () => {
-        http.get.and.returnValue(of([]));
+        http.get.mockReturnValue(of([]));
 
         service.getInbox();
         service.refreshInbox();
@@ -83,7 +84,7 @@ describe('MailService', () => {
 
     it('marks inbox message as read', () => {
         const inboxMessage = { auditUuid: 'abc', subject: 'Hello', body: 'Body', messageDate: '' } as Message;
-        http.get.and.returnValue(of([inboxMessage]));
+        http.get.mockReturnValue(of([inboxMessage]));
 
         const inboxSignal = service.getInbox();
         service.markInboxAsRead('abc');

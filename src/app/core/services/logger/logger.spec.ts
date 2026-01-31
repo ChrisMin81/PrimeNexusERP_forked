@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import * as core from '@angular/core';
+import { vi } from 'vitest';
 import { LoggerService } from './logger';
 
 describe('LoggerService', () => {
@@ -14,11 +15,11 @@ describe('LoggerService', () => {
 
     it('logs based on the current dev mode', () => {
         const isDev = core.isDevMode();
-        const traceSpy = spyOn(console, 'trace');
-        const logSpy = spyOn(console, 'log');
-        const infoSpy = spyOn(console, 'info');
-        const warnSpy = spyOn(console, 'warn');
-        const errorSpy = spyOn(console, 'error');
+        const traceSpy = vi.spyOn(console, 'trace');
+        const logSpy = vi.spyOn(console, 'log');
+        const infoSpy = vi.spyOn(console, 'info');
+        const warnSpy = vi.spyOn(console, 'warn');
+        const errorSpy = vi.spyOn(console, 'error');
 
         service.trace('a');
         service.debug('b');

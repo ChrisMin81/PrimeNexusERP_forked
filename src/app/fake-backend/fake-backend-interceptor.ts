@@ -2,8 +2,16 @@ import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/ht
 import { defer, delay, of, throwError } from 'rxjs';
 import { AuthResult } from '@/features/auth/model/authResult';
 import { LoginCredentials, Message } from 'api';
-import { v4 as uuidv4, validate as isValidUUID } from 'uuid';
 import { backendFakeData } from '@/fake-backend/backend-fake-data';
+
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+const generateUuid = () => {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+        return crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+};
 
 const responseDelay = 1000;
 const respond = <T>(value: HttpResponse<T>) => defer(() => of(value).pipe(delay(responseDelay)));
@@ -59,7 +67,7 @@ const POSTRequestHandler: HttpInterceptorFn = (req, next) => {
     }
 
     if (req.url.endsWith('/api/messages/send')) {
-        const nextId = uuidv4();
+        const nextId = generateUuid();
         const newMessage: Message = {
             auditUuid: nextId,
             subject: (req.body as Message).subject,
@@ -112,7 +120,7 @@ function paginate(req: HttpRequest<unknown>, data: Message[]) {
 
 function getAudtiUUID(req: HttpRequest<unknown>) {
     const candidate = req.url.split('/').pop();
-    if (isValidUUID(candidate)) {
+    if (candidate && uuidPattern.test(candidate)) {
         return candidate;
     }
     return respondError(new Error('Invalid UUID provided'));

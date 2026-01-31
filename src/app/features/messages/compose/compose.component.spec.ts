@@ -3,20 +3,21 @@ import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { Compose } from './compose.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { LoadingService } from '@/core/services/loading/loading.service';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Compose', () => {
     let fixture: ComponentFixture<Compose>;
     let component: Compose;
-    let mailService: jasmine.SpyObj<MailService>;
-    let loadingService: jasmine.SpyObj<LoadingService>;
-    let router: jasmine.SpyObj<Router>;
+    let mailService: SpyObj<MailService>;
+    let loadingService: SpyObj<LoadingService>;
+    let router: SpyObj<Router>;
 
     const setup = async (queryParams: Record<string, string | null> = {}) => {
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['sendMail']);
-        loadingService = jasmine.createSpyObj<LoadingService>('LoadingService', ['loading']);
-        loadingService.loading.and.returnValue(false);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
+        mailService = createSpyObj<MailService>(['sendMail']);
+        loadingService = createSpyObj<LoadingService>(['loading']);
+        loadingService.loading.mockReturnValue(false);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
 
         await TestBed.configureTestingModule({
             imports: [Compose],
@@ -69,7 +70,7 @@ describe('Compose', () => {
 
     it('prevents send when loading', async () => {
         await setup();
-        loadingService.loading.and.returnValue(true);
+        loadingService.loading.mockReturnValue(true);
 
         component.send();
 

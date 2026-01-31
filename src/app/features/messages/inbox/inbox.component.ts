@@ -74,7 +74,7 @@ export class Inbox {
         const attachments = message?.attachments ?? [];
         this.logger.debug(
             `Opening attachments for message ${message.auditUuid}`,
-            attachments?.map((a) => a.baseName)
+            attachments?.map((attachment: MessageAttachment) => attachment.baseName)
         );
         this.attachmentList.set([...attachments]);
         this.attachmentsDialogOpen.set(true);

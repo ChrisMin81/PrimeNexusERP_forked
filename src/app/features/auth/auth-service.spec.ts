@@ -4,14 +4,16 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { addSeconds, subSeconds } from 'date-fns';
 
+import { vi } from 'vitest';
 import { AuthService } from './auth-service';
 import { LoggerService } from '@/core/services/logger/logger';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('AuthService', () => {
     let service: AuthService;
-    let httpClient: jasmine.SpyObj<HttpClient>;
-    let router: jasmine.SpyObj<Router>;
-    let logger: jasmine.SpyObj<LoggerService>;
+    let httpClient: SpyObj<HttpClient>;
+    let router: SpyObj<Router>;
+    let logger: SpyObj<LoggerService>;
 
     const loginResponse = {
         idToken: 'token-123',
@@ -19,10 +21,10 @@ describe('AuthService', () => {
     };
 
     beforeEach(() => {
-        httpClient = jasmine.createSpyObj<HttpClient>('HttpClient', ['post', 'delete']);
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
-        logger = jasmine.createSpyObj<LoggerService>('LoggerService', ['trace', 'debug', 'log', 'info', 'warn', 'error']);
+        httpClient = createSpyObj<HttpClient>(['post', 'delete']);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
+        logger = createSpyObj<LoggerService>(['trace', 'debug', 'log', 'info', 'warn', 'error']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -42,7 +44,7 @@ describe('AuthService', () => {
     });
 
     it('logs in successfully, sets session and redirects to dashboard', () => {
-        httpClient.post.and.returnValue(of(loginResponse));
+        httpClient.post.mockReturnValue(of(loginResponse));
 
         const resultSignal = service.login('user@test.com', 'pw');
         const result = resultSignal();
@@ -58,7 +60,7 @@ describe('AuthService', () => {
     });
 
     it('handles login error by cleaning storage and redirecting to unauthorized', () => {
-        httpClient.post.and.returnValue(throwError(() => new Error('boom')));
+        httpClient.post.mockReturnValue(throwError(() => new Error('boom')));
         localStorage.setItem('id_token', 'stale');
         localStorage.setItem('expires_at', '123');
 
@@ -71,7 +73,7 @@ describe('AuthService', () => {
     });
 
     it('logs out, clears storage and redirects to login', () => {
-        httpClient.delete.and.returnValue(of({}));
+        httpClient.delete.mockReturnValue(of({}));
         localStorage.setItem('id_token', 'active');
         localStorage.setItem('expires_at', '123');
 
@@ -88,21 +90,21 @@ describe('AuthService', () => {
         const future = addSeconds(new Date(), 60).valueOf();
         localStorage.setItem('expires_at', JSON.stringify(future));
 
-        expect(service.isLoggedIn()).toBeTrue();
-        expect(service.isLoggedOut()).toBeFalse();
+        expect(service.isLoggedIn()).toBe(true);
+        expect(service.isLoggedOut()).toBe(false);
     });
 
     it('isLoggedIn returns false when expiration is in the past', () => {
         const past = subSeconds(new Date(), 60).valueOf();
         localStorage.setItem('expires_at', JSON.stringify(past));
 
-        expect(service.isLoggedIn()).toBeFalse();
-        expect(service.isLoggedOut()).toBeTrue();
+        expect(service.isLoggedIn()).toBe(false);
+        expect(service.isLoggedOut()).toBe(true);
     });
 
     it('isAuthenticated proxies isLoggedIn', () => {
-        spyOn(service, 'isLoggedIn').and.returnValue(true);
-        expect(service.isAuthenticated()).toBeTrue();
+        vi.spyOn(service, 'isLoggedIn').mockReturnValue(true);
+        expect(service.isAuthenticated()).toBe(true);
         expect(service.isLoggedIn).toHaveBeenCalled();
     });
 });

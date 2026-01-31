@@ -2,13 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { Logout } from './logout.component';
 import { AuthService } from '@/features/auth/auth-service';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Logout Component', () => {
     let fixture: ComponentFixture<Logout>;
-    let authService: jasmine.SpyObj<AuthService>;
+    let authService: SpyObj<AuthService>;
 
     beforeEach(async () => {
-        authService = jasmine.createSpyObj<AuthService>('AuthService', ['logout']);
+        authService = createSpyObj<AuthService>(['logout']);
 
         await TestBed.configureTestingModule({
             imports: [Logout],

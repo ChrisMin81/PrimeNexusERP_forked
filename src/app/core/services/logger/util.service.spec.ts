@@ -1,19 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SecurityContext } from '@angular/core';
+import { vi } from 'vitest';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 import { UtilService } from './util.service';
 
 describe('UtilService', () => {
     let service: UtilService;
-    let sanitizer: jasmine.SpyObj<DomSanitizer>;
+    let sanitizer: SpyObj<DomSanitizer>;
 
     let safeUrl: SafeResourceUrl;
 
     beforeEach(() => {
-        sanitizer = jasmine.createSpyObj<DomSanitizer>('DomSanitizer', ['sanitize', 'bypassSecurityTrustResourceUrl']);
+        sanitizer = createSpyObj<DomSanitizer>(['sanitize', 'bypassSecurityTrustResourceUrl']);
         safeUrl = 'safe-url' as unknown as SafeResourceUrl;
-        sanitizer.bypassSecurityTrustResourceUrl.and.returnValue(safeUrl);
-        sanitizer.sanitize.and.returnValue('safe-url');
+        sanitizer.bypassSecurityTrustResourceUrl.mockReturnValue(safeUrl);
+        sanitizer.sanitize.mockReturnValue('safe-url');
 
         TestBed.configureTestingModule({
             providers: [
@@ -25,9 +27,14 @@ describe('UtilService', () => {
         service = TestBed.inject(UtilService);
     });
 
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
     it('creates a blob URL and opens it when sanitized', () => {
-        const openSpy = spyOn(window, 'open').and.stub();
-        const urlSpy = spyOn(window.URL, 'createObjectURL').and.returnValue('blob:url');
+        const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+        openSpy.mockClear();
+        const urlSpy = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue('blob:url');
 
         service.downloadCSV([{ message: 'm', status: 500, url: '/api' }]);
 
@@ -38,8 +45,8 @@ describe('UtilService', () => {
     });
 
     it('does not open a window when sanitize returns null', () => {
-        sanitizer.sanitize.and.returnValue(null);
-        const openSpy = spyOn(window, 'open').and.stub();
+        sanitizer.sanitize.mockReturnValueOnce(null);
+        const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
 
         service.downloadCSV([{ message: 'm', status: 500, url: '/api' }]);
 

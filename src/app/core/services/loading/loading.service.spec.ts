@@ -15,35 +15,37 @@ describe('LoadingService', () => {
         const source$ = new Subject<number>();
         const values: number[] = [];
 
-        expect(service.loading()).toBeFalse();
+        expect(service.loading()).toBe(false);
 
         const sub = service.showLoaderUntilCompleted(source$).subscribe((value) => values.push(value));
 
-        expect(service.loading()).toBeTrue();
+        expect(service.loading()).toBe(true);
 
         source$.next(1);
         source$.complete();
 
         expect(values).toEqual([1]);
-        expect(service.loading()).toBeFalse();
+        expect(service.loading()).toBe(false);
 
         sub.unsubscribe();
     });
 
-    it('clears loading when the source errors', (done) => {
+    it('clears loading when the source errors', async () => {
         const source$ = new Subject<number>();
-
-        service.showLoaderUntilCompleted(source$).subscribe({
-            error: (err) => {
-                expect(err).toEqual(new Error('boom'));
-                setTimeout(() => {
-                    expect(service.loading()).toBeFalse();
-                    done();
-                }, 0);
-            }
+        const errorDone = new Promise<void>((resolve) => {
+            service.showLoaderUntilCompleted(source$).subscribe({
+                error: (err) => {
+                    expect(err).toEqual(new Error('boom'));
+                    setTimeout(() => {
+                        expect(service.loading()).toBe(false);
+                        resolve();
+                    }, 0);
+                }
+            });
         });
 
-        expect(service.loading()).toBeTrue();
+        expect(service.loading()).toBe(true);
         source$.error(new Error('boom'));
+        await errorDone;
     });
 });

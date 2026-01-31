@@ -4,24 +4,25 @@ import { Router } from '@angular/router';
 import { Dashboard } from './dashboard.component';
 import { MailService } from '@/features/messages/services/mail.service';
 import { Message } from 'api';
+import { createSpyObj, type SpyObj } from '@/testing/spy';
 
 describe('Dashboard Component', () => {
     let fixture: ComponentFixture<Dashboard>;
     let component: Dashboard;
-    let router: jasmine.SpyObj<Router>;
-    let mailService: jasmine.SpyObj<MailService>;
+    let router: SpyObj<Router>;
+    let mailService: SpyObj<MailService>;
 
     const inboxSignal = signal<Message[] | undefined>(undefined);
     const sentSignal = signal<Message[] | undefined>(undefined);
     const draftsSignal = signal<Message[] | undefined>(undefined);
 
     beforeEach(async () => {
-        router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-        router.navigate.and.resolveTo(true);
-        mailService = jasmine.createSpyObj<MailService>('MailService', ['getInbox', 'getSent', 'getDrafts']);
-        mailService.getInbox.and.returnValue(inboxSignal as Signal<Message[] | undefined>);
-        mailService.getSent.and.returnValue(sentSignal as Signal<Message[] | undefined>);
-        mailService.getDrafts.and.returnValue(draftsSignal as Signal<Message[] | undefined>);
+        router = createSpyObj<Router>(['navigate']);
+        router.navigate.mockResolvedValue(true);
+        mailService = createSpyObj<MailService>(['getInbox', 'getSent', 'getDrafts']);
+        mailService.getInbox.mockReturnValue(inboxSignal as Signal<Message[] | undefined>);
+        mailService.getSent.mockReturnValue(sentSignal as Signal<Message[] | undefined>);
+        mailService.getDrafts.mockReturnValue(draftsSignal as Signal<Message[] | undefined>);
 
         await TestBed.configureTestingModule({
             imports: [Dashboard],

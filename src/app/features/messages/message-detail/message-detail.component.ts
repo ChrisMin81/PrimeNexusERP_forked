@@ -7,8 +7,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Mailbox, MailService } from '@/features/messages/services/mail.service';
 import { Message } from 'api';
 import { FileList } from '@/shared/components/file-downloads-overlay/file-list/file-list.component';
-import { validate as isValidUUID } from 'uuid';
 import { LoggerService } from '@/core/services/logger/logger';
+
+const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 @Component({
     selector: 'app-message-detail',
@@ -39,7 +40,7 @@ export class MessageDetail {
         const paramMap = this.paramMap();
         const id = paramMap.get('id');
         const list = this.mailboxList()();
-        if (!id || !isValidUUID(id) || !list) {
+        if (!id || !uuidPattern.test(id) || !list) {
             return null;
         }
         return list.find((m) => m.auditUuid === id) ?? null;
@@ -60,7 +61,7 @@ export class MessageDetail {
         effect(() => {
             const box = this.boxData();
             const current = this.message();
-            if (box === 'inbox' && current && !current.readDate && isValidUUID(current.auditUuid)) {
+            if (box === 'inbox' && current && !current.readDate && current.auditUuid && uuidPattern.test(current.auditUuid)) {
                 this.mailService.markInboxAsRead(current.auditUuid!);
             }
         });
