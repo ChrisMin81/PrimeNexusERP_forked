@@ -29,7 +29,12 @@
             "api/*": [
                 "projects/api/src/lib/*",
                 "dist/api/*"
-            ]
+            ],
+            "camba-shared": ["projects/camba-shared/src/public-api.ts"],
+            "camba-shared/components": ["projects/camba-shared/components/index.ts"],
+            "camba-shared/guards": ["projects/camba-shared/guards/index.ts"],
+            "camba-shared/providers": ["projects/camba-shared/providers/index.ts"],
+            "camba-shared/utils": ["projects/camba-shared/utils/index.ts"]
         }
     },
     "angularCompilerOptions": {
@@ -41,6 +46,12 @@
     "references": [
       {
         "path": "./projects/api/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/camba-shared/tsconfig.lib.json"
+      },
+      {
+        "path": "./projects/camba-shared/tsconfig.spec.json"
       }
     ]
 }

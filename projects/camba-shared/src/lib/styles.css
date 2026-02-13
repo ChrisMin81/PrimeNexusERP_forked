@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Default Design Tokens for the Library */
+    --flux-primary-color: #3b82f6;
+    --flux-radius: 8px;
+    --flux-bg-color: #ffffff;
+    --flux-text-color: #1e293b;
+    --flux-border-color: #cbd5e1;
+    --flux-label-color: #475569;
+    --flux-disabled-bg: #f1f5f9;
+    --flux-disabled-text: #94a3b8;
+    --flux-hint-color: #64748b;
+  }
+}

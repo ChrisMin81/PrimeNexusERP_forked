@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
-import { FloatLabelInput } from '@/shared/components/input/float-label-input/float-label-input.component';
+import { FloatLabelIconInputComponent } from 'camba-shared/components';
 
 @Component({
     selector: 'app-search-input',
-    imports: [CommonModule, InputTextModule, FloatLabelInput],
+    imports: [CommonModule, InputTextModule, FloatLabelIconInputComponent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './search-input.component.html',
     styleUrl: './search-input.component.scss'

@@ -75,6 +75,60 @@
                     }
                 }
             }
+        },
+        "api": {
+            "projectType": "library",
+            "root": "projects/api",
+            "sourceRoot": "projects/api",
+            "prefix": "api",
+            "architect": {
+                "build": {
+                    "builder": "@angular/build:ng-packagr",
+                    "configurations": {
+                        "production": {
+                            "tsConfig": "projects/api/tsconfig.lib.prod.json"
+                        },
+                        "development": {
+                            "tsConfig": "projects/api/tsconfig.lib.json"
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                }
+            }
+        },
+        "camba-shared": {
+          "projectType": "library",
+          "root": "projects/camba-shared",
+          "sourceRoot": "projects/camba-shared",
+          "prefix": "camba",
+          "architect": {
+            "build": {
+              "builder": "@angular/build:ng-packagr",
+              "configurations": {
+                "production": {
+                  "tsConfig": "projects/camba-shared/tsconfig.lib.prod.json"
+                },
+                "development": {
+                  "tsConfig": "projects/camba-shared/tsconfig.lib.json"
+                }
+              },
+              "defaultConfiguration": "production"
+            },
+              "test": {
+                  "builder": "@angular/build:unit-test",
+                  "options": {
+                      "buildTarget": "camba-shared:build:development",
+                      "setupFiles": [
+                          "projects/camba-shared/test-setup.ts"
+                      ],
+                      "tsConfig": "projects/camba-shared/tsconfig.spec.json",
+                      "runner": "vitest",
+                      "include": [
+                          "**/*.spec.ts"
+                      ]
+                  }
+              }
+          }
         }
     },
     "cli": {
